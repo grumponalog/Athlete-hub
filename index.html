@@ -1,0 +1,600 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Operation Hott Josh — The Athlete Planner</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400;1,600&family=DM+Mono:wght@300;400;500&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+<style>
+:root{--forest:#1a2e1e;--forest-mid:#243428;--forest-light:#2e4233;--green:#4a7c59;--green-bright:#6dab80;--green-pale:#c8e6d0;--cream:#f5f0e8;--cream-dark:#ede6d6;--parchment:#f9f5ed;--gold:#c9a84c;--gold-pale:#f0e4c0;--rust:#a0522d;--rust-pale:#f5ddd0;--blue-pale:#d0e4f5;--blue:#3a6b9a;--purple-pale:#ede0f5;--purple:#7a4a9a;--muted:#7a8a7e;--text:#1a2e1e;--border:rgba(26,46,30,0.12);--shadow:0 2px 12px rgba(26,46,30,0.08);--shadow-lg:0 8px 32px rgba(26,46,30,0.15);--radius:10px;--radius-lg:16px;}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+body{font-family:'Lato',sans-serif;background:var(--parchment);color:var(--text);min-height:100vh;padding-bottom:60px;}
+.header{background:var(--forest);color:var(--cream);padding:24px 20px 18px;position:relative;overflow:hidden;}
+.header::before{content:'';position:absolute;top:-40px;right:-40px;width:170px;height:170px;border-radius:50%;background:rgba(74,124,89,0.15);}
+.header-eyebrow{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:0.2em;text-transform:uppercase;color:var(--green-bright);margin-bottom:6px;position:relative;z-index:1;}
+.header-title{font-family:'Playfair Display',serif;font-size:30px;font-weight:700;line-height:1.1;position:relative;z-index:1;}
+.header-title em{font-style:italic;color:var(--green-bright);}
+.header-meta{display:flex;gap:8px;margin-top:12px;flex-wrap:wrap;position:relative;z-index:1;}
+.meta-pill{font-family:'DM Mono',monospace;font-size:10px;padding:4px 10px;border-radius:20px;background:rgba(255,255,255,0.08);color:var(--cream);letter-spacing:0.05em;border:0.5px solid rgba(255,255,255,0.15);}
+.meta-pill.accent{background:rgba(74,124,89,0.3);border-color:var(--green);color:var(--green-pale);}
+.main-nav{background:var(--forest-mid);display:flex;position:sticky;top:0;z-index:200;border-bottom:1px solid rgba(255,255,255,0.06);}
+.main-tab{flex:1;padding:13px 6px;text-align:center;cursor:pointer;border-bottom:2.5px solid transparent;font-family:'DM Mono',monospace;font-size:10px;letter-spacing:0.1em;text-transform:uppercase;color:rgba(255,255,255,0.5);transition:all 0.2s;}
+.main-tab.active{border-bottom-color:var(--green-bright);color:var(--green-bright);}
+.view{display:none;}
+.view.active{display:block;animation:fadeUp 0.2s ease;}
+.day-panel-view{display:none;}
+.day-panel-view.active{display:block;animation:fadeUp 0.2s ease;}
+@keyframes fadeUp{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+.day-nav{background:var(--forest-light);padding:0 4px;display:flex;overflow-x:auto;scrollbar-width:none;}
+.day-nav::-webkit-scrollbar{display:none;}
+.day-tab{flex-shrink:0;flex:1;padding:10px 10px 12px;cursor:pointer;border-bottom:2.5px solid transparent;transition:all 0.2s;text-align:center;min-width:48px;}
+.day-tab.active{border-bottom-color:var(--green-bright);}
+.day-tab.active .day-tab-name,.day-tab.active .day-tab-num{color:var(--green-bright);}
+.day-tab.today .day-tab-num{background:var(--green);color:var(--cream);border-radius:50%;width:26px;height:26px;display:flex;align-items:center;justify-content:center;margin:0 auto;}
+.day-tab-name{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:0.1em;color:rgba(255,255,255,0.45);text-transform:uppercase;margin-bottom:3px;}
+.day-tab-num{font-size:16px;font-weight:700;color:rgba(255,255,255,0.45);line-height:1;}
+.panel-pad{padding:20px 16px;}
+.day-header{margin-bottom:18px;}
+.day-full-date{font-family:'DM Mono',monospace;font-size:10px;color:var(--muted);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:4px;}
+.day-title{font-family:'Playfair Display',serif;font-size:22px;font-weight:600;color:var(--forest);}
+.day-badges{display:flex;gap:6px;margin-top:8px;flex-wrap:wrap;}
+.badge{font-family:'DM Mono',monospace;font-size:10px;font-weight:500;padding:3px 10px;border-radius:20px;letter-spacing:0.04em;}
+.badge-strength{background:var(--green-pale);color:#1a4d2e;}
+.badge-run{background:var(--blue-pale);color:#1a3a5c;}
+.badge-mobility{background:var(--gold-pale);color:#5c3d00;}
+.badge-shop{background:#e8d5f0;color:#4a1a6e;}
+.badge-prep{background:var(--rust-pale);color:#5c2a10;}
+.badge-family{background:#fce8e8;color:#8b1a1a;}
+.badge-ruck{background:#ddd6c8;color:#4a3a1a;}
+.card{background:white;border-radius:var(--radius-lg);border:1px solid var(--border);margin-bottom:14px;overflow:hidden;box-shadow:var(--shadow);}
+.card-header{padding:14px 16px 12px;border-bottom:1px solid var(--border);}
+.card-title{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:0.15em;text-transform:uppercase;color:var(--muted);font-weight:500;}
+.card-body{padding:14px 16px;}
+.meal-row,.exercise-row{display:flex;align-items:flex-start;gap:12px;cursor:pointer;transition:background 0.15s;border-radius:6px;padding:10px 8px;margin:0 -8px;border-bottom:1px solid var(--border);}
+.meal-row:last-child,.exercise-row:last-child{border-bottom:none;}
+.meal-row:hover,.exercise-row:hover{background:var(--cream);}
+.meal-time,.exercise-num{font-family:'DM Mono',monospace;font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:0.08em;min-width:60px;padding-top:2px;}
+.exercise-num{min-width:20px;font-size:10px;}
+.meal-info,.exercise-info{flex:1;}
+.meal-name,.exercise-name{font-size:14px;font-weight:700;color:var(--forest);margin-bottom:2px;line-height:1.3;}
+.meal-desc{font-size:12px;color:var(--muted);line-height:1.4;}
+.exercise-sets{font-family:'DM Mono',monospace;font-size:11px;color:var(--green);}
+.meal-arrow{color:var(--muted);font-size:14px;padding-top:2px;}
+.wife-tag{display:inline-block;font-family:'DM Mono',monospace;font-size:9px;padding:2px 7px;border-radius:10px;background:var(--purple-pale);color:var(--purple);margin-left:6px;vertical-align:middle;}
+.cond-block{background:linear-gradient(135deg,#e8f4ff,var(--blue-pale));border-radius:var(--radius);padding:14px 16px;margin-bottom:14px;border:1px solid rgba(58,107,154,0.15);}
+.cond-block.ruck{background:linear-gradient(135deg,#efe9dc,#ddd6c8);border-color:rgba(74,58,26,0.15);}
+.cond-header{font-family:'DM Mono',monospace;font-size:10px;color:var(--blue);letter-spacing:0.15em;text-transform:uppercase;margin-bottom:8px;}
+.cond-block.ruck .cond-header{color:#4a3a1a;}
+.cond-main{font-family:'Playfair Display',serif;font-size:18px;font-weight:600;color:var(--forest);margin-bottom:4px;}
+.cond-detail{font-size:13px;color:#1a3a5c;line-height:1.5;}
+.cond-block.ruck .cond-detail{color:#3a2e14;}
+.mobility-block{background:linear-gradient(135deg,#fdf6e3,var(--gold-pale));border-radius:var(--radius);padding:14px 16px;margin-bottom:14px;border:1px solid rgba(201,168,76,0.2);cursor:pointer;}
+.mobility-header{font-family:'DM Mono',monospace;font-size:10px;color:#8b6914;letter-spacing:0.15em;text-transform:uppercase;margin-bottom:8px;display:flex;justify-content:space-between;}
+.mobility-moves{display:flex;flex-wrap:wrap;gap:6px;}
+.mobility-pill{font-size:11px;background:rgba(201,168,76,0.2);color:#5c3d00;padding:3px 10px;border-radius:20px;border:0.5px solid rgba(201,168,76,0.3);}
+.note-block{background:var(--cream);border-radius:var(--radius);padding:12px 14px;margin-bottom:14px;border-left:3px solid var(--green);}
+.note-block.wife{border-left-color:var(--purple);background:var(--purple-pale);}
+.note-text{font-size:13px;color:var(--forest);line-height:1.6;}
+.shop-section{margin-bottom:18px;}
+.shop-section-title{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:0.15em;text-transform:uppercase;color:var(--muted);margin-bottom:10px;padding-bottom:6px;border-bottom:1px solid var(--border);}
+.shop-item{display:flex;align-items:center;gap:12px;padding:8px 0;border-bottom:1px solid rgba(0,0,0,0.04);cursor:pointer;}
+.shop-item:last-child{border-bottom:none;}
+.shop-check{width:20px;height:20px;border-radius:4px;border:1.5px solid var(--border);background:white;flex-shrink:0;display:flex;align-items:center;justify-content:center;transition:all 0.15s;}
+.shop-item.checked .shop-check{background:var(--green);border-color:var(--green);color:white;}
+.shop-item.checked .shop-check::after{content:'✓';font-size:12px;font-weight:700;}
+.shop-item.checked .shop-label{text-decoration:line-through;color:var(--muted);}
+.shop-label{font-size:14px;color:var(--text);flex:1;}
+.prep-step{display:flex;gap:14px;margin-bottom:16px;cursor:pointer;}
+.prep-step.done .prep-content{opacity:0.5;}
+.prep-time-col{min-width:52px;text-align:right;}
+.prep-time{font-family:'DM Mono',monospace;font-size:10px;color:var(--green);font-weight:500;}
+.prep-line-col{display:flex;flex-direction:column;align-items:center;}
+.prep-dot{width:10px;height:10px;border-radius:50%;background:var(--green-pale);border:2px solid var(--green);flex-shrink:0;margin-top:1px;transition:all 0.2s;}
+.prep-step.done .prep-dot{background:var(--green);}
+.prep-line{width:2px;flex:1;background:var(--border);margin-top:4px;min-height:18px;}
+.prep-content{flex:1;padding-bottom:4px;}
+.prep-task{font-size:14px;font-weight:700;color:var(--forest);margin-bottom:2px;}
+.prep-detail{font-size:12px;color:var(--muted);line-height:1.4;}
+.prep-duration{font-family:'DM Mono',monospace;font-size:10px;color:var(--rust);margin-top:3px;}
+.section-heading{font-family:'Playfair Display',serif;font-size:20px;font-weight:600;color:var(--forest);margin:4px 0 12px;}
+.section-sub{font-size:13px;color:var(--muted);line-height:1.6;margin-bottom:16px;}
+.search-bar{background:var(--forest-light);padding:12px 16px;}
+.search-input{width:100%;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.12);border-radius:var(--radius);padding:10px 14px;font-size:14px;color:var(--cream);font-family:'Lato',sans-serif;outline:none;}
+.search-input::placeholder{color:rgba(255,255,255,0.4);}
+.search-input:focus{border-color:var(--green-bright);}
+.filters{background:var(--forest-light);padding:0 16px 12px;display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;}
+.filters::-webkit-scrollbar{display:none;}
+.filter-btn{flex-shrink:0;font-family:'DM Mono',monospace;font-size:10px;letter-spacing:0.08em;padding:5px 12px;border-radius:20px;border:1px solid rgba(255,255,255,0.15);background:transparent;color:rgba(255,255,255,0.6);cursor:pointer;white-space:nowrap;}
+.filter-btn.active{background:var(--green);border-color:var(--green);color:white;}
+.results-count{font-family:'DM Mono',monospace;font-size:10px;color:var(--muted);letter-spacing:0.08em;padding:12px 16px 0;}
+.recipe-card{background:white;border-radius:var(--radius-lg);border:1px solid var(--border);margin-bottom:12px;overflow:hidden;box-shadow:var(--shadow);cursor:pointer;transition:all 0.15s;}
+.recipe-card:hover{box-shadow:var(--shadow-lg);transform:translateY(-1px);}
+.recipe-card-inner{padding:14px 16px;}
+.recipe-region{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:0.15em;text-transform:uppercase;color:var(--muted);margin-bottom:4px;}
+.recipe-name{font-family:'Playfair Display',serif;font-size:17px;font-weight:600;color:var(--forest);margin-bottom:6px;line-height:1.3;}
+.recipe-desc{font-size:12px;color:var(--muted);line-height:1.5;margin-bottom:10px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}
+.recipe-meta{display:flex;gap:6px;flex-wrap:wrap;}
+.meta-chip{font-family:'DM Mono',monospace;font-size:9px;padding:2px 8px;border-radius:12px;letter-spacing:0.04em;}
+.chip-meal{background:var(--cream-dark);color:var(--forest);}
+.chip-time{background:var(--gold-pale);color:#5c3d00;}
+.chip-protein{background:var(--green-pale);color:#1a4d2e;}
+.chip-wife{background:var(--purple-pale);color:var(--purple);}
+.chip-batch{background:var(--blue-pale);color:var(--blue);}
+.no-results{text-align:center;padding:50px 20px;color:var(--muted);font-size:14px;}
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(10,20,12,0.75);z-index:1000;padding:16px;overflow-y:auto;backdrop-filter:blur(3px);}
+.modal-overlay.open{display:flex;align-items:flex-start;justify-content:center;}
+.modal{background:var(--parchment);border-radius:var(--radius-lg);width:100%;max-width:500px;overflow:hidden;box-shadow:var(--shadow-lg);animation:modalIn 0.25s ease;margin:auto;}
+@keyframes modalIn{from{opacity:0;transform:translateY(20px) scale(0.97)}to{opacity:1;transform:translateY(0) scale(1)}}
+.modal-header{background:var(--forest);padding:20px 20px 16px;color:var(--cream);position:relative;}
+.modal-eyebrow{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:0.2em;text-transform:uppercase;color:var(--green-bright);margin-bottom:4px;}
+.modal-title{font-family:'Playfair Display',serif;font-size:22px;font-weight:600;line-height:1.2;padding-right:32px;}
+.modal-close{position:absolute;top:16px;right:16px;width:30px;height:30px;border-radius:50%;background:rgba(255,255,255,0.1);border:none;color:var(--cream);font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;}
+.modal-body{padding:20px;}
+.modal-section{margin-bottom:20px;}
+.modal-section:last-child{margin-bottom:0;}
+.modal-section-title{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:0.15em;text-transform:uppercase;color:var(--muted);margin-bottom:10px;padding-bottom:6px;border-bottom:1px solid var(--border);}
+.stats-row{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px;}
+.stat-box{background:var(--cream-dark);border-radius:var(--radius);padding:8px 12px;text-align:center;flex:1;min-width:58px;}
+.stat-val{font-family:'DM Mono',monospace;font-size:16px;font-weight:500;color:var(--forest);}
+.stat-lbl{font-family:'DM Mono',monospace;font-size:9px;color:var(--muted);letter-spacing:0.08em;text-transform:uppercase;margin-top:2px;}
+.wife-box{background:var(--purple-pale);border-radius:var(--radius);padding:12px 14px;margin-bottom:14px;border-left:3px solid var(--purple);}
+.wife-box-title{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:0.15em;text-transform:uppercase;color:var(--purple);margin-bottom:5px;}
+.wife-box-text{font-size:13px;color:#3a1a5c;line-height:1.5;}
+.ingredient-row{display:flex;justify-content:space-between;gap:10px;padding:6px 0;border-bottom:1px solid rgba(0,0,0,0.05);font-size:13px;}
+.ingredient-row:last-child{border-bottom:none;}
+.ingredient-amount{font-family:'DM Mono',monospace;font-size:11px;color:var(--green);font-weight:500;min-width:80px;text-align:right;}
+.step-row{display:flex;gap:10px;margin-bottom:10px;}
+.step-num{font-family:'DM Mono',monospace;font-size:11px;background:var(--green);color:white;width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;font-weight:500;}
+.step-text{font-size:13px;color:var(--text);line-height:1.5;flex:1;}
+.cue-row{display:flex;gap:10px;margin-bottom:8px;align-items:flex-start;}
+.cue-bullet{width:6px;height:6px;border-radius:50%;background:var(--green);flex-shrink:0;margin-top:7px;}
+.cue-text{font-size:14px;color:var(--text);line-height:1.5;}
+.notes-box{background:var(--cream);border-radius:var(--radius);padding:12px 14px;border-left:3px solid var(--gold);}
+.notes-text{font-size:13px;color:var(--forest);line-height:1.5;}
+.workout-card{background:white;border-radius:var(--radius-lg);border:1px solid var(--border);margin-bottom:16px;overflow:hidden;box-shadow:var(--shadow);}
+.workout-card-head{background:var(--forest);padding:14px 16px;}
+.workout-card-eyebrow{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:0.2em;text-transform:uppercase;color:var(--green-bright);margin-bottom:3px;}
+.workout-card-title{font-family:'Playfair Display',serif;font-size:18px;font-weight:600;color:var(--cream);}
+.rhythm-row{display:flex;gap:12px;padding:10px 0;border-bottom:1px solid var(--border);align-items:baseline;}
+.rhythm-row:last-child{border-bottom:none;}
+.rhythm-day{font-family:'DM Mono',monospace;font-size:10px;color:var(--green);text-transform:uppercase;letter-spacing:0.08em;min-width:38px;font-weight:500;}
+.rhythm-text{font-size:13px;color:var(--text);line-height:1.5;flex:1;}
+.weight-input-row{display:flex;gap:8px;margin-bottom:16px;}
+.weight-input{flex:1;border:1px solid var(--border);border-radius:var(--radius);padding:11px 14px;font-size:15px;font-family:'DM Mono',monospace;color:var(--forest);background:white;outline:none;}
+.weight-input:focus{border-color:var(--green);}
+.weight-btn{background:var(--green);color:white;border:none;border-radius:var(--radius);padding:11px 18px;font-family:'DM Mono',monospace;font-size:11px;letter-spacing:0.08em;text-transform:uppercase;cursor:pointer;}
+.weight-btn:hover{background:var(--forest-light);}
+.big-stats{display:flex;gap:10px;margin-bottom:16px;}
+.big-stat{flex:1;background:white;border:1px solid var(--border);border-radius:var(--radius-lg);padding:16px 12px;text-align:center;box-shadow:var(--shadow);}
+.big-stat-val{font-family:'DM Mono',monospace;font-size:24px;font-weight:500;color:var(--forest);}
+.big-stat-lbl{font-family:'DM Mono',monospace;font-size:9px;color:var(--muted);letter-spacing:0.1em;text-transform:uppercase;margin-top:4px;}
+.big-stat.down .big-stat-val{color:var(--green);}
+.log-row{display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid rgba(0,0,0,0.05);}
+.log-row:last-child{border-bottom:none;}
+.log-date{font-family:'DM Mono',monospace;font-size:11px;color:var(--muted);}
+.log-weight{font-family:'DM Mono',monospace;font-size:14px;font-weight:500;color:var(--forest);}
+.log-delta{font-family:'DM Mono',monospace;font-size:11px;min-width:52px;text-align:right;}
+.log-delta.down{color:var(--green);}
+.log-delta.up{color:var(--rust);}
+.log-del{background:none;border:none;color:var(--muted);cursor:pointer;font-size:14px;padding:0 0 0 10px;}
+#weightChart{width:100%;height:160px;margin-bottom:16px;}
+</style>
+</head>
+<body>
+<div class="header">
+  <div class="header-eyebrow" id="hdrEyebrow">Operation Hott Josh</div>
+  <div class="header-title">The <em>Athlete</em> Planner</div>
+  <div class="header-meta" id="hdrMeta"></div>
+</div>
+<nav class="main-nav">
+  <div class="main-tab active" data-view="week" onclick="switchView('week')">This Week</div>
+  <div class="main-tab" data-view="training" onclick="switchView('training')">Training</div>
+  <div class="main-tab" data-view="recipes" onclick="switchView('recipes')">Recipes</div>
+  <div class="main-tab" data-view="progress" onclick="switchView('progress')">Progress</div>
+</nav>
+
+<div class="view active" id="view-week">
+  <nav class="day-nav" id="dayNav"></nav>
+  <div id="dayPanels"></div>
+</div>
+
+<div class="view" id="view-training">
+  <div class="panel-pad" id="trainingBody"></div>
+</div>
+
+<div class="view" id="view-recipes">
+  <div class="search-bar"><input class="search-input" id="recipeSearch" placeholder="Search recipes, regions, ingredients…" oninput="renderRecipes()"></div>
+  <div class="filters" id="recipeFilters"></div>
+  <div class="results-count" id="recipeCount"></div>
+  <div class="panel-pad" id="recipeGrid" style="padding-top:10px"></div>
+</div>
+
+<div class="view" id="view-progress">
+  <div class="panel-pad" id="progressBody"></div>
+</div>
+
+<div class="modal-overlay" id="modal" onclick="if(event.target===this)closeModal()">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-eyebrow" id="modalEyebrow"></div>
+      <div class="modal-title" id="modalTitle"></div>
+      <button class="modal-close" onclick="closeModal()">×</button>
+    </div>
+    <div class="modal-body" id="modalBody"></div>
+  </div>
+</div>
+
+<script>
+/* ============ RECIPE DATABASE (La Bibliothèque) ============ */
+const RECIPES = [{"id":7,"name":"Bœuf Haché Provençal","name_french":"Bœuf Haché Provençal","description":"Seasoned ground beef with herbes de Provence over ratatouille, finished with olive oil. Simple weeknight Provençal.","region":"Provence","meal_type":"dinner","course":"main","cook_time_min":15,"prep_time_min":5,"servings":5,"calories":520,"protein":48,"carbs":12,"fat":28,"wife_safe":true,"wife_notes":"Naturally GF/DF. Her ratatouille portion without garlic. Season her beef with just herbs and salt.","kid_friendly":true,"batch_cook":false,"week_introduced":2,"notes":"Kids can have theirs over pasta if they resist ratatouille. Ratatouille is batch-cooked Sunday.","tags":["GF","DF","high-protein","Provence","quick","family"],"ingredients":[{"name":"Ground beef, 85% lean","amount":"2","unit":"lbs"},{"name":"Ratatouille, batch","amount":"3","unit":"cups"},{"name":"Herbes de Provence","amount":"1","unit":"tsp"},{"name":"Garlic, minced","amount":"2","unit":"cloves"},{"name":"Olive oil","amount":"2","unit":"tbsp"}],"steps":["Brown ground beef, breaking up. Season with herbes de Provence, garlic, salt.","Warm ratatouille in same or separate pan.","Plate ratatouille as base, beef over top, finish with olive oil and black pepper."]},{"id":8,"name":"Dinde aux Haricots Blancs","name_french":"Dinde aux Haricots Blancs","description":"Ground turkey and white bean stew with shallot, Dijon, thyme, and chicken stock. Finished with butter. Hearty and clean.","region":"France — Loire influence","meal_type":"dinner","course":"main","cook_time_min":20,"prep_time_min":10,"servings":5,"calories":510,"protein":52,"carbs":24,"fat":18,"wife_safe":true,"wife_notes":"GF/DF. Pull her portion before shallot. Olive oil instead of butter finish.","kid_friendly":true,"batch_cook":false,"week_introduced":2,"notes":"Serve with bread for the sauce.","tags":["GF","DF-adaptable","high-protein","family","Loire"],"ingredients":[{"name":"Ground turkey","amount":"1.5","unit":"lbs"},{"name":"Cannellini beans","amount":"2","unit":"cans"},{"name":"Shallots, minced","amount":"2","unit":"whole"},{"name":"Garlic, minced","amount":"3","unit":"cloves"},{"name":"Dijon mustard","amount":"2","unit":"tsp"},{"name":"Fresh thyme","amount":"5","unit":"sprigs"},{"name":"Chicken stock","amount":"1","unit":"cup"},{"name":"Butter","amount":"1","unit":"tbsp"}],"steps":["Sauté garlic in olive oil 2 min. Add turkey, brown completely.","Pull wife's portion before adding shallot.","Add shallot to main pan, cook 2 min. Add beans, stock, Dijon, thyme.","Simmer 10 min until slightly thickened.","Finish with butter (olive oil for wife). Serve with bread."]},{"id":9,"name":"Filet de Porc Moutarde","name_french":"Filet de Porc Moutarde","description":"Pork tenderloin coated in Dijon-thyme crust, seared and finished in oven. Roasted carrots and a quick pan sauce. Friday family dinner.","region":"France — classic bistro","meal_type":"dinner","course":"main","cook_time_min":25,"prep_time_min":25,"servings":5,"calories":560,"protein":55,"carbs":8,"fat":24,"wife_safe":true,"wife_notes":"Naturally GF/DF. Skip butter pan sauce for her — olive oil drizzle instead. Dijon and thyme are low FODMAP.","kid_friendly":true,"batch_cook":false,"week_introduced":2,"notes":"Rest 5 min before slicing. Slice on a bias. Friday treat.","tags":["GF","DF-adaptable","high-protein","family","friday","bistro"],"ingredients":[{"name":"Pork tenderloin","amount":"2","unit":"lbs"},{"name":"Dijon mustard","amount":"3","unit":"tbsp"},{"name":"Fresh thyme","amount":"2","unit":"tbsp"},{"name":"Garlic, minced","amount":"3","unit":"cloves"},{"name":"Olive oil","amount":"3","unit":"tbsp"},{"name":"Carrots","amount":"1","unit":"bunch"},{"name":"Butter","amount":"1","unit":"tbsp"},{"name":"Chicken stock","amount":"0.25","unit":"cup"}],"steps":["Mix Dijon, thyme, garlic, olive oil. Coat pork completely. Rest 20 min.","Toss carrots in olive oil, salt, thyme. Roast at 425°F, 20 min.","Sear pork in oven-safe pan over high heat, 2 min per side.","Transfer to 425°F oven, 12-15 min until 145°F internal.","Rest 5 min. Slice on a bias.","Pan sauce: butter + stock splash. Olive oil drizzle for wife."]},{"id":13,"name":"Pistou","name_french":"Pistou","description":"The Provençal cousin of pesto — basil, garlic, olive oil. No cheese, no pine nuts. Goes on soup, chicken, beans, lentils.","region":"Provence","meal_type":"condiment","course":"condiment","cook_time_min":0,"prep_time_min":5,"servings":8,"calories":80,"protein":1,"carbs":1,"fat":9,"wife_safe":true,"wife_notes":"Make a small batch without garlic for her — just basil and olive oil. Use garlic-infused oil if desired.","kid_friendly":true,"batch_cook":true,"week_introduced":2,"notes":"Keeps 5 days in the fridge. Blitz — don't over-process.","tags":["GF","DF","vegan","condiment","Provence","batch-cook","quick"],"ingredients":[{"name":"Fresh basil","amount":"2","unit":"bunches"},{"name":"Garlic","amount":"3","unit":"cloves"},{"name":"Olive oil, good quality","amount":"0.5","unit":"cup"},{"name":"Salt","amount":"to taste","unit":""}],"steps":["Combine basil, garlic, and a pinch of salt in a blender or food processor.","Stream in olive oil while blending. Keep it a little coarse — not completely smooth.","Taste and adjust salt. Store in a jar with a thin layer of olive oil on top."]},{"id":11,"name":"Plateau Charcuterie","name_french":"Plateau Charcuterie","description":"A composed board of jambon, cornichons, olives, cheese, and bread. The Saturday lunch. Everyone builds their own.","region":"France — all regions","meal_type":"lunch","course":"sharing","cook_time_min":0,"prep_time_min":10,"servings":5,"calories":500,"protein":45,"carbs":20,"fat":24,"wife_safe":true,"wife_notes":"GF crackers instead of bread. Skip cheese for strict DF. Jambon, cornichons, olives naturally clean.","kid_friendly":true,"batch_cook":false,"week_introduced":2,"notes":"Put everything out on a board. You eat heavy on protein, light on bread.","tags":["GF-adaptable","DF-adaptable","no-cook","family","saturday","sharing"],"ingredients":[{"name":"Jambon or sliced ham","amount":"6-8","unit":"slices"},{"name":"Comté or Gruyère","amount":"1","unit":"wedge"},{"name":"Brie or soft cheese","amount":"0.5","unit":"wheel"},{"name":"Cornichons","amount":"1","unit":"small bowl"},{"name":"Niçoise olives","amount":"1","unit":"small bowl"},{"name":"Good bread + GF option","amount":"1","unit":"loaf"},{"name":"Dijon mustard","amount":"1","unit":"small jar"}],"steps":["Arrange everything on a large board.","Set out mustard and cornichons in small bowls.","Everyone assembles their own plate. Done."]},{"id":3,"name":"Poulet Rôti + Haricots Blancs au Pistou","name_french":"Poulet et Haricots Blancs","description":"Batch chicken over cannellini beans dressed with basil pistou. Quick weekday lunch assembly.","region":"Provence","meal_type":"lunch","course":"main","cook_time_min":5,"prep_time_min":5,"servings":1,"calories":550,"protein":55,"carbs":28,"fat":20,"wife_safe":true,"wife_notes":"Naturally GF/DF. Pistou without cheese. Beans dressed with olive oil and lemon only.","kid_friendly":true,"batch_cook":false,"week_introduced":2,"notes":"Assembly from batch components. Takes 5 minutes.","tags":["GF","DF","high-protein","quick-assembly","Provence","batch-lunch"],"ingredients":[{"name":"Batch poulet rôti, sliced","amount":"6","unit":"oz"},{"name":"Cannellini beans","amount":"0.5","unit":"cup"},{"name":"Pistou","amount":"1","unit":"tbsp"},{"name":"Mixed greens","amount":"2","unit":"cups"},{"name":"Vinaigrette","amount":"1","unit":"tbsp"},{"name":"Lemon","amount":"1","unit":"squeeze"}],"steps":["Warm chicken in a pan with a knob of butter, or slice cold.","Toss beans with pistou and a squeeze of lemon. Season.","Dress greens lightly with vinaigrette.","Plate beside chicken and beans."]},{"id":2,"name":"Poulet Rôti aux Herbes de Provence","name_french":"Poulet Rôti","description":"The Sunday roast chicken. Herbes de Provence, butter under skin, lemon inside. Makes two chickens — one for Sunday dinner, one for weekday lunches.","region":"Provence","meal_type":"dinner","course":"main","cook_time_min":75,"prep_time_min":20,"servings":10,"calories":320,"protein":38,"carbs":0,"fat":18,"wife_safe":true,"wife_notes":"Naturally GF/DF. Use olive oil instead of butter under skin for her portion.","kid_friendly":true,"batch_cook":true,"week_introduced":2,"notes":"Make 2 chickens every Sunday. One for dinner, one stays whole in the fridge for Mon-Fri lunches.","tags":["GF","DF-adaptable","batch-cook","sunday-roast","Provence","high-protein"],"ingredients":[{"name":"Whole chicken","amount":"2","unit":"x 4 lbs"},{"name":"Herbes de Provence","amount":"2","unit":"tbsp"},{"name":"Butter","amount":"4","unit":"tbsp"},{"name":"Lemon","amount":"2","unit":"whole"},{"name":"Garlic","amount":"1","unit":"head"},{"name":"Olive oil","amount":"2","unit":"tbsp"},{"name":"Salt and black pepper","amount":"generous","unit":""}],"steps":["Pat chickens dry. Season generously with salt inside and out.","Slide butter mixed with herbes de Provence under the skin.","Place lemon halves and smashed garlic inside the cavity.","Truss if desired. Drizzle with olive oil.","Roast at 400°F for 1 hr 15 min, basting once at 45 min.","Rest 10 min before carving. One for dinner, one in the fridge."]},{"id":12,"name":"Ratatouille","name_french":"Ratatouille","description":"The Provençal vegetable stew. Zucchini, eggplant, tomato, garlic, olive oil. Batch-cooked Sunday, used all week as a base or side.","region":"Provence","meal_type":"side","course":"side","cook_time_min":45,"prep_time_min":15,"servings":8,"calories":120,"protein":3,"carbs":14,"fat":7,"wife_safe":true,"wife_notes":"Pull her portion before garlic goes in. Season with just oil and herbs.","kid_friendly":true,"batch_cook":true,"week_introduced":2,"notes":"Cook low and slow — don't rush it. Goes with beef, chicken, eggs, or alone with bread.","tags":["GF","DF","vegan","batch-cook","Provence","side","versatile"],"ingredients":[{"name":"Zucchini, diced","amount":"3","unit":"medium"},{"name":"Eggplant, diced","amount":"2","unit":"medium"},{"name":"Tomatoes, chopped","amount":"4","unit":"medium"},{"name":"Garlic, smashed","amount":"4","unit":"cloves"},{"name":"Olive oil","amount":"4","unit":"tbsp"},{"name":"Herbes de Provence","amount":"1","unit":"tbsp"},{"name":"Salt and black pepper","amount":"to taste","unit":""}],"steps":["Heat olive oil in a wide heavy pan over medium-low.","Add eggplant, cook 10 min until starting to soften.","Add zucchini, cook 10 min. Pull wife's portion before adding garlic.","Add garlic, tomatoes, herbes de Provence.","Simmer uncovered 20-25 min until everything is very soft and silky.","Season well. Better the next day."]},{"id":4,"name":"Salade Niçoise","name_french":"Salade Niçoise","description":"The classic composed salad from Nice. Tuna, eggs, haricots verts, olives, anchovy, tomato — arranged, not tossed. Pure Côte d'Azur.","region":"Côte d'Azur — Nice","meal_type":"lunch","course":"main","cook_time_min":0,"prep_time_min":10,"servings":1,"calories":520,"protein":52,"carbs":14,"fat":22,"wife_safe":true,"wife_notes":"Naturally GF/DF. No changes needed — every element is clean.","kid_friendly":true,"batch_cook":false,"week_introduced":2,"notes":"Do not toss a Niçoise — you compose it. Kids can have theirs deconstructed if needed.","tags":["GF","DF","high-protein","no-cook","Côte d'Azur","Nice","classic"],"ingredients":[{"name":"Tuna in olive oil","amount":"1","unit":"can"},{"name":"Hard-boiled eggs","amount":"2","unit":"whole"},{"name":"Haricots verts, blanched","amount":"1","unit":"handful"},{"name":"Niçoise olives","amount":"8-10","unit":"whole"},{"name":"Anchovy fillets","amount":"2-3","unit":"whole"},{"name":"Tomato, sliced","amount":"1","unit":"medium"},{"name":"Vinaigrette","amount":"2","unit":"tbsp"}],"steps":["Arrange everything on the plate — do not toss.","Dress with vinaigrette. Lay anchovies over the top.","Good bread on the side to mop the dressing."]},{"id":5,"name":"Saumon aux Lentilles du Puy","name_french":"Saumon aux Lentilles","description":"Seared salmon over French lentils with Dijon mustard dressing. Asparagus alongside. Clean, elegant, high protein.","region":"France — bistro classic","meal_type":"dinner","course":"main","cook_time_min":20,"prep_time_min":5,"servings":1,"calories":580,"protein":58,"carbs":30,"fat":22,"wife_safe":true,"wife_notes":"Naturally GF/DF. Lentils without shallot for her. Mustard dressing with olive oil.","kid_friendly":true,"batch_cook":false,"week_introduced":2,"notes":"Lentils batch-cooked Sunday. Medium center on salmon is correct.","tags":["GF","DF","high-protein","omega-3","bistro","lentils"],"ingredients":[{"name":"Salmon fillet","amount":"6","unit":"oz"},{"name":"French lentils, cooked","amount":"0.75","unit":"cup"},{"name":"Asparagus","amount":"6-8","unit":"spears"},{"name":"Dijon mustard","amount":"1","unit":"tsp"},{"name":"Shallot, minced","amount":"1","unit":"whole"},{"name":"Olive oil","amount":"2","unit":"tbsp"},{"name":"Lemon","amount":"0.5","unit":"whole"},{"name":"Butter","amount":"1","unit":"knob"}],"steps":["Roast asparagus at 425°F with olive oil and salt, 10-12 min.","Warm lentils with shallot and a knob of butter. Stir in Dijon, lemon juice, salt.","Season salmon, sear skin-side down in hot pan 4 min, flip 2 min.","Plate lentils, salmon on top, asparagus alongside. Finish with olive oil."]},{"id":6,"name":"Soupe au Pistou","name_french":"Soupe au Pistou","description":"The Provençal summer soup — white beans, zucchini, carrot, tomato in a simple broth, finished tableside with basil pistou. Serve with bread.","region":"Provence","meal_type":"dinner","course":"main","cook_time_min":30,"prep_time_min":15,"servings":5,"calories":480,"protein":32,"carbs":52,"fat":14,"wife_safe":true,"wife_notes":"GF/DF. Pull her portion before garlic. Use garlic-infused oil instead. Make small batch of pistou without garlic for her.","kid_friendly":true,"batch_cook":true,"week_introduced":2,"notes":"Makes large batch — serves as Sunday lunch and Wednesday dinner. Pistou goes on tableside, don't stir in.","tags":["GF","DF","batch-cook","vegetarian","Provence","soup","high-fiber"],"ingredients":[{"name":"Cannellini beans","amount":"2","unit":"cans"},{"name":"Zucchini, diced","amount":"2","unit":"medium"},{"name":"Carrots, diced","amount":"2","unit":"medium"},{"name":"Tomatoes, chopped","amount":"2","unit":"medium"},{"name":"Garlic, smashed","amount":"4","unit":"cloves"},{"name":"Chicken stock or water","amount":"8","unit":"cups"},{"name":"Pistou","amount":"2","unit":"tbsp per bowl"},{"name":"Olive oil","amount":"2","unit":"tbsp"}],"steps":["Sauté carrot and zucchini in olive oil 5 min. Pull wife's portion before adding garlic.","Add garlic, tomato, beans, stock. Simmer 20 min.","Season generously with salt and pepper.","Ladle into bowls, add a big spoonful of pistou on top. Do not stir — let it marble in.","Serve with country bread. GF bread for wife."]},{"id":10,"name":"Tarte Flambée (Flammekueche)","name_french":"Tarte Flambée","description":"Alsatian thin-crust flatbread with crème fraîche, caramelized onion, and lardons. The pizza of Alsace. Kids love it.","region":"Alsace","meal_type":"dinner","course":"main","cook_time_min":55,"prep_time_min":15,"servings":5,"calories":480,"protein":28,"carbs":38,"fat":22,"wife_safe":true,"wife_notes":"GF flatbread or cauliflower base for her. Coconut cream instead of crème fraîche. Skip onion or use scallion green tops only. Lardons fine.","kid_friendly":true,"batch_cook":false,"week_introduced":2,"notes":"Onions must caramelize slowly — 30-40 min minimum. Don't rush them. Bake at 500°F.","tags":["Alsace","GF-adaptable","DF-adaptable","family","saturday","heritage"],"ingredients":[{"name":"Thin flatbread bases","amount":"2-3","unit":"whole"},{"name":"Crème fraîche","amount":"1","unit":"cup"},{"name":"Onions, thinly sliced","amount":"3","unit":"large"},{"name":"Lardons or thick-cut bacon","amount":"6","unit":"oz"},{"name":"Butter","amount":"1","unit":"tbsp"},{"name":"Salt, pepper, nutmeg","amount":"to taste","unit":""}],"steps":["Caramelize onions slowly in butter, 30-40 min on low. Do not rush.","Cook lardons separately until just starting to crisp.","Season crème fraîche with salt, pepper, pinch of nutmeg.","Spread crème fraîche thin on bases.","Top with caramelized onion and lardons.","Bake at 500°F for 8-10 min until edges blister. Serve immediately."]},{"id":1,"name":"Tartine au Beurre","name_french":"Tartine au Beurre","description":"The French morning standard. Good bread, good butter, café au lait. Simple, never boring.","region":"France — all regions","meal_type":"breakfast","course":"breakfast","cook_time_min":5,"prep_time_min":2,"servings":1,"calories":300,"protein":12,"carbs":28,"fat":16,"wife_safe":true,"wife_notes":"Use GF bread or crackers. Everything else identical.","kid_friendly":true,"batch_cook":false,"week_introduced":2,"notes":"Buy fresh sourdough or country loaf Saturday. Breton butter if available.","tags":["GF-adaptable","DF","quick","french-breakfast"],"ingredients":[{"name":"Sourdough or country bread","amount":"1-2","unit":"slices"},{"name":"Good butter (Breton preferred)","amount":"generous","unit":""},{"name":"Jam or thin-sliced jambon","amount":"optional","unit":""},{"name":"Café au lait or espresso","amount":"1","unit":"cup"}],"steps":["Toast lightly or serve fresh — the French rarely over-toast.","Spread butter generously while warm.","Add jam or jambon if desired.","Eat slowly with coffee. Do not rush this."]},{"id":14,"name":"Vinaigrette Maison","name_french":"Vinaigrette","description":"The house vinaigrette. Dijon, shallot, red wine vinegar, olive oil. Make a jar on Sunday. Use all week.","region":"France — classic","meal_type":"condiment","course":"condiment","cook_time_min":0,"prep_time_min":5,"servings":10,"calories":90,"protein":0,"carbs":1,"fat":10,"wife_safe":true,"wife_notes":"Naturally GF/DF. Skip shallot for low FODMAP — still excellent.","kid_friendly":true,"batch_cook":true,"week_introduced":2,"notes":"Shake in a jar. Keeps a week in the fridge. The ratio: 3 parts oil, 1 part vinegar.","tags":["GF","DF","vegan","condiment","batch-cook","quick","classic"],"ingredients":[{"name":"Dijon mustard","amount":"1","unit":"tsp"},{"name":"Shallot, minced","amount":"1","unit":"small"},{"name":"Red wine vinegar","amount":"3","unit":"tbsp"},{"name":"Olive oil, good quality","amount":"9","unit":"tbsp"},{"name":"Salt and black pepper","amount":"to taste","unit":""}],"steps":["Combine everything in a jar.","Shake vigorously until emulsified.","Taste and adjust — more vinegar for brightness, more mustard for body.","Store in the fridge. Shake before each use."]},{"id":17,"name":"Agneau aux Lentilles","name_french":"Agneau aux Lentilles","description":"Ground lamb with French lentils, cumin, herbes de Provence, and crushed tomato. A Provençal-North African crossover that works perfectly.","region":"Provence","meal_type":"dinner","course":"main","cook_time_min":20,"prep_time_min":10,"servings":5,"calories":560,"protein":52,"carbs":28,"fat":24,"wife_safe":true,"wife_notes":"Naturally GF/DF. Her lentils pre-portioned without shallot. Season her lamb with just cumin and herbs — no garlic for strict low FODMAP.","kid_friendly":true,"batch_cook":false,"week_introduced":3,"notes":"Finish with a squeeze of lemon — essential.","tags":["GF","DF","high-protein","Provence","lamb","lentils"],"ingredients":[{"name":"Ground lamb","amount":"1.5","unit":"lbs"},{"name":"French lentils, cooked","amount":"3","unit":"cups"},{"name":"Shallots, minced","amount":"2","unit":"whole"},{"name":"Garlic, minced","amount":"3","unit":"cloves"},{"name":"Cumin","amount":"1","unit":"tsp"},{"name":"Herbes de Provence","amount":"1","unit":"tsp"},{"name":"Crushed tomatoes","amount":"0.5","unit":"cup"},{"name":"Lemon","amount":"1","unit":"whole"}],"steps":["Brown lamb in hot pan, breaking up. Season with cumin, herbs, salt.","Add shallot and garlic, cook 2 min. Add crushed tomato, simmer 5 min.","Warm lentils separately with olive oil and lemon juice.","Plate lentils, spoon lamb over top. Finish with a squeeze of lemon."]},{"id":23,"name":"Cabillaud Beurre Blanc","name_french":"Cabillaud Beurre Blanc","description":"Seared cod finished with a classic beurre blanc — the Loire sauce born in the Nantes region. Served with French lentils. Friday family dinner.","region":"Nantes — Loire-Atlantique","meal_type":"dinner","course":"main","cook_time_min":25,"prep_time_min":10,"servings":5,"calories":560,"protein":54,"carbs":26,"fat":24,"wife_safe":true,"wife_notes":"Skip beurre blanc for her — lemon-olive oil drizzle instead. Lentils without shallot. Naturally GF.","kid_friendly":true,"batch_cook":false,"week_introduced":3,"notes":"Beurre blanc: reduce wine and shallot almost dry, whisk in cold butter one cube at a time. This sauce was born in the Nantes region.","tags":["GF","DF-adaptable","high-protein","Nantes","Loire","heritage","friday","seafood","classic"],"ingredients":[{"name":"Cod fillets","amount":"5","unit":"x 6 oz"},{"name":"French lentils, cooked","amount":"3","unit":"cups"},{"name":"Dry white wine","amount":"0.25","unit":"cup"},{"name":"Shallot, minced","amount":"1","unit":"whole"},{"name":"Cold butter, cubed","amount":"4","unit":"tbsp"},{"name":"Lemon","amount":"1","unit":"whole"},{"name":"Dijon mustard","amount":"1","unit":"tsp"},{"name":"Olive oil","amount":"2","unit":"tbsp"}],"steps":["Reduce wine and shallot in small saucepan until almost dry.","Over very low heat, whisk in cold butter one cube at a time until glossy and emulsified.","Season with lemon and salt. Keep warm — do not let it get too hot or it will break.","Warm lentils with Dijon and lemon. Season well.","Sear cod in olive oil — 3 min per side until just flaking.","Plate lentils, cod on top, beurre blanc spooned over."]},{"id":18,"name":"Cabillaud au Fenouil","name_french":"Cabillaud au Fenouil","description":"Roasted cod over braised fennel with chickpeas and lemon. A Loire table dish — clean, elegant, the kind of fish dinner Nantes knows.","region":"Nantes — Loire-Atlantique","meal_type":"dinner","course":"main","cook_time_min":30,"prep_time_min":10,"servings":5,"calories":540,"protein":55,"carbs":26,"fat":18,"wife_safe":true,"wife_notes":"Naturally GF/DF. Fennel in small amounts is low FODMAP. Chickpea batch is already clean for her.","kid_friendly":true,"batch_cook":false,"week_introduced":3,"notes":"Braise the fennel until it starts to caramelize — that's the key.","tags":["GF","DF","high-protein","Nantes","Loire","heritage","seafood","fish"],"ingredients":[{"name":"Cod fillets","amount":"5","unit":"x 6 oz"},{"name":"Fennel bulbs, sliced thin","amount":"2","unit":"whole"},{"name":"Chickpeas, cooked with fennel fronds","amount":"2","unit":"cups"},{"name":"Dry white wine","amount":"0.5","unit":"cup"},{"name":"Garlic, sliced","amount":"3","unit":"cloves"},{"name":"Olive oil","amount":"3","unit":"tbsp"},{"name":"Lemons","amount":"2","unit":"whole"}],"steps":["Braise fennel in olive oil with garlic and white wine until soft and caramelizing, ~20 min.","Warm chickpeas separately in olive oil, lemon zest, thyme.","Season cod, pan-sear in olive oil 3-4 min per side until just flaking.","Plate chickpeas, fennel alongside, cod on top. Heavy squeeze of lemon."]},{"id":24,"name":"Chickpeas with Fennel and Herbs","name_french":"Pois Chiches au Fenouil","description":"Canned chickpeas warmed in olive oil with fennel fronds, lemon zest, and thyme. A Sunday batch component that goes with fish all week.","region":"Provence","meal_type":"side","course":"side","cook_time_min":15,"prep_time_min":5,"servings":6,"calories":180,"protein":9,"carbs":26,"fat":6,"wife_safe":true,"wife_notes":"Naturally GF/DF. Fennel in small amounts is low FODMAP. Clean for her.","kid_friendly":true,"batch_cook":true,"week_introduced":3,"notes":"A Sunday batch component. Pairs with cod, salmon, or chicken.","tags":["GF","DF","vegan","batch-cook","Provence","side","legumes"],"ingredients":[{"name":"Chickpeas, canned","amount":"2","unit":"cans"},{"name":"Fennel fronds","amount":"1","unit":"handful"},{"name":"Lemon zest","amount":"1","unit":"lemon"},{"name":"Fresh thyme","amount":"3","unit":"sprigs"},{"name":"Olive oil","amount":"2","unit":"tbsp"},{"name":"Salt and black pepper","amount":"to taste","unit":""}],"steps":["Drain and rinse chickpeas.","Warm in olive oil over medium heat 5 min.","Add lemon zest, fennel fronds, thyme leaves. Toss to coat.","Season well. Store and reheat through the week."]},{"id":15,"name":"Moules Marinières","name_french":"Moules Marinières","description":"Mussels steamed in Muscadet with shallot, garlic, butter, and parsley. The dish of Nantes. Requires good bread to mop the broth.","region":"Nantes — Loire-Atlantique","meal_type":"dinner","course":"main","cook_time_min":10,"prep_time_min":15,"servings":5,"calories":420,"protein":45,"carbs":14,"fat":16,"wife_safe":true,"wife_notes":"Naturally GF/DF. Olive oil instead of butter for her. No shallot or use scallion green tops.","kid_friendly":true,"batch_cook":false,"week_introduced":3,"notes":"Muscadet is the traditional wine — it's from the Nantes region. Teach kids to use the shell as a spoon.","tags":["GF","DF-adaptable","high-protein","Nantes","Loire","heritage","seafood","quick"],"ingredients":[{"name":"Mussels, scrubbed","amount":"4","unit":"lbs"},{"name":"Dry white wine (Muscadet)","amount":"1","unit":"cup"},{"name":"Shallots, minced","amount":"3","unit":"whole"},{"name":"Garlic, smashed","amount":"4","unit":"cloves"},{"name":"Butter","amount":"3","unit":"tbsp"},{"name":"Fresh parsley, chopped","amount":"1","unit":"large handful"}],"steps":["Discard any mussels that are open and don't close when tapped.","Melt butter in largest pot over high heat. Sauté shallot and garlic 2 min.","Add wine, bring to a boil. Add all mussels, cover immediately.","Steam 4-5 min, shaking pot once. Done when all shells are open.","Ladle into deep bowls, pour the broth over everything. Parsley on top.","Serve with bread — mandatory."]},{"id":16,"name":"Piperade","name_french":"Piperade","description":"Slow-cooked Basque pepper and tomato sauce. Red and yellow peppers, tomato, garlic in olive oil. Between a ratatouille and a sofrito — goes with almost everything.","region":"Basque Country","meal_type":"side","course":"sauce","cook_time_min":40,"prep_time_min":15,"servings":8,"calories":90,"protein":2,"carbs":12,"fat":5,"wife_safe":true,"wife_notes":"Pull her portion before garlic. Use garlic-infused oil for her batch.","kid_friendly":true,"batch_cook":true,"week_introduced":3,"notes":"Make a large batch Sunday. Use with chicken, tuna, eggs, or pork all week. Gets better as it sits.","tags":["GF","DF","vegan","batch-cook","Basque","sauce","versatile"],"ingredients":[{"name":"Red bell peppers, sliced","amount":"2","unit":"large"},{"name":"Yellow bell peppers, sliced","amount":"1","unit":"large"},{"name":"Tomatoes, chopped","amount":"3","unit":"medium"},{"name":"Garlic, sliced","amount":"4","unit":"cloves"},{"name":"Olive oil","amount":"3","unit":"tbsp"},{"name":"Salt and black pepper","amount":"to taste","unit":""},{"name":"Fresh thyme","amount":"3","unit":"sprigs"}],"steps":["Heat olive oil in a wide pan over medium-low.","Add peppers, cook 15 min until very soft.","Pull wife's portion before adding garlic.","Add garlic and tomatoes, cook 20-25 min more until everything is silky.","Season well. Cool and store. Better next day."]},{"id":21,"name":"Porc aux Légumes Verts","name_french":"Porc aux Légumes Verts","description":"Seared pork loin chops with wilted spinach or chard, white beans, and lemon. Simple Wednesday dinner.","region":"France — Loire","meal_type":"dinner","course":"main","cook_time_min":20,"prep_time_min":10,"servings":5,"calories":540,"protein":52,"carbs":22,"fat":22,"wife_safe":true,"wife_notes":"GF/DF. Skip shallot for her or use scallion greens. Olive oil instead of butter.","kid_friendly":true,"batch_cook":false,"week_introduced":3,"notes":"One-pan meal once the pork is rested.","tags":["GF","DF-adaptable","high-protein","Loire","family","one-pan"],"ingredients":[{"name":"Pork loin chops","amount":"5","unit":"whole"},{"name":"Spinach or chard","amount":"1","unit":"large bag"},{"name":"Cannellini beans","amount":"2","unit":"cans"},{"name":"Shallot, minced","amount":"2","unit":"whole"},{"name":"Garlic","amount":"3","unit":"cloves"},{"name":"Lemon","amount":"1","unit":"whole"},{"name":"Fresh thyme","amount":"4","unit":"sprigs"},{"name":"Olive oil","amount":"3","unit":"tbsp"}],"steps":["Season chops with salt and thyme. Sear in hot pan with olive oil, 3-4 min per side. Rest.","Same pan: sauté shallot and garlic.","Wilt spinach in batches in the same pan.","Add beans, warm through. Squeeze of lemon, season well.","Plate beans and greens, chop on top."]},{"id":19,"name":"Salade de Poulet aux Herbes","name_french":"Salade de Poulet aux Herbes","description":"Batch chicken over dressed greens with capers, olives, fresh herbs, and lemon vinaigrette. Light but satisfying weekday lunch.","region":"France — bistro","meal_type":"lunch","course":"main","cook_time_min":0,"prep_time_min":8,"servings":1,"calories":480,"protein":50,"carbs":8,"fat":22,"wife_safe":true,"wife_notes":"Naturally GF/DF. Capers and olives are low FODMAP. Full plate, no changes.","kid_friendly":false,"batch_cook":false,"week_introduced":3,"notes":"Uses batch chicken. Assembly only.","tags":["GF","DF","high-protein","no-cook","quick-assembly","bistro","batch-lunch"],"ingredients":[{"name":"Batch chicken, sliced","amount":"5-6","unit":"oz"},{"name":"Mixed greens","amount":"2","unit":"cups"},{"name":"Capers","amount":"1","unit":"tsp"},{"name":"Niçoise olives","amount":"6-8","unit":"whole"},{"name":"Lemon vinaigrette","amount":"1.5","unit":"tbsp"},{"name":"Fresh parsley or tarragon","amount":"1","unit":"handful"},{"name":"Lemon","amount":"1","unit":"wedge"}],"steps":["Dress greens lightly with vinaigrette.","Arrange sliced chicken on top.","Scatter capers and olives. Fresh herbs over everything.","Lemon wedge on the side."]},{"id":20,"name":"Thon à la Piperade","name_french":"Thon à la Piperade","description":"Canned tuna in olive oil laid over warm piperade with capers, olives, and a squeeze of lemon. Tin lunch done properly.","region":"Basque Country","meal_type":"lunch","course":"main","cook_time_min":5,"prep_time_min":3,"servings":1,"calories":480,"protein":48,"carbs":16,"fat":20,"wife_safe":true,"wife_notes":"Her piperade portion (without garlic). Tuna in olive oil. Full plate.","kid_friendly":false,"batch_cook":false,"week_introduced":3,"notes":"Don't stir the tuna in — lay it on top. Tastes like a Basque bar counter.","tags":["GF","DF","high-protein","quick-assembly","Basque","no-cook"],"ingredients":[{"name":"Tuna in olive oil","amount":"1","unit":"can"},{"name":"Piperade, warmed","amount":"0.75","unit":"cup"},{"name":"Capers","amount":"1","unit":"tsp"},{"name":"Niçoise olives","amount":"6","unit":"whole"},{"name":"Lemon","amount":"1","unit":"squeeze"},{"name":"Olive oil","amount":"1","unit":"drizzle"}],"steps":["Warm piperade in a small pan.","Drain tuna and lay over piperade — do not stir in.","Scatter capers and olives. Drizzle olive oil. Squeeze lemon.","Serve with bread for dipping."]},{"id":22,"name":"Œufs en Piperade","name_french":"Œufs en Piperade","description":"Eggs baked directly in the remaining piperade. A classic Basque dish — bring the pan to the table.","region":"Basque Country","meal_type":"dinner","course":"main","cook_time_min":10,"prep_time_min":5,"servings":5,"calories":460,"protein":32,"carbs":18,"fat":24,"wife_safe":true,"wife_notes":"Naturally GF/DF. Her piperade portion used. Full plate, identical dinner.","kid_friendly":true,"batch_cook":false,"week_introduced":3,"notes":"Do not overcook the eggs. Yolks should be runny. Serve in the pan.","tags":["GF","DF","Basque","eggs","fridge-clearing","quick","family"],"ingredients":[{"name":"Piperade, remaining batch","amount":"all","unit":""},{"name":"Eggs","amount":"10","unit":"whole"},{"name":"Fresh parsley","amount":"1","unit":"handful"},{"name":"Bread or GF option","amount":"for dipping","unit":""}],"steps":["Warm all piperade in a large wide pan over medium heat.","Make small wells in the sauce. Crack eggs directly into wells.","Cover and cook until whites are just set, yolks still runny — about 5 min.","Parsley over everything. Bring the pan to the table.","Bread mandatory for the sauce."]},{"id":33,"name":"Confit de Canard","name_french":"Confit de Canard","description":"Duck legs cured in salt, thyme, and bay, then slow-cooked submerged in duck fat until silky and falling off the bone. Finished with crackling skin. Duck-fat potatoes alongside. The Friday of all Fridays.","region":"Gascony — Southwest France","meal_type":"dinner","course":"main","cook_time_min":180,"prep_time_min":20,"servings":5,"calories":680,"protein":58,"carbs":18,"fat":38,"wife_safe":true,"wife_notes":"Naturally GF/DF. Duck is pure protein and fat — no dairy, no gluten. Duck fat potatoes are DF. Her plate is identical.","kid_friendly":true,"batch_cook":false,"week_introduced":4,"notes":"Start the cure Sunday or Thursday night — minimum 24 hrs. Cook at 275F for 2.5-3 hrs. Final sear gives the lacquered crackling skin. Green salad with sharp vinaigrette cuts the richness.","tags":["GF","DF","high-protein","Gascony","Southwest","friday","heritage","special"],"ingredients":[{"name":"Duck legs","amount":"6","unit":"whole"},{"name":"Kosher salt","amount":"2","unit":"tbsp"},{"name":"Fresh thyme","amount":"8","unit":"sprigs"},{"name":"Bay leaves","amount":"4","unit":"whole"},{"name":"Black pepper, cracked","amount":"1","unit":"tsp"},{"name":"Duck fat or olive oil","amount":"to submerge","unit":""},{"name":"Potatoes","amount":"2","unit":"lbs"}],"steps":["Cure: rub duck legs with salt, thyme, bay, pepper. Refrigerate uncovered 24-48 hrs.","Wipe off the cure. Place duck in deep baking dish, cover with duck fat or olive oil.","Cook at 275F for 2.5-3 hours until meat pulls from bone easily.","Remove duck from fat. Crank oven to 450F. Roast potatoes in duck fat 35-40 min until crisp.","Sear duck legs skin-side down in a hot pan 4-5 min until skin is lacquered and crackling.","Serve with green salad, sharp vinaigrette, and cornichons on the table."]},{"id":27,"name":"Endive Braisée aux Lardons","name_french":"Endive Braisée aux Lardons","description":"Belgian endive halved, browned in butter, braised with lardons and Riesling. An Alsatian preparation that transforms endive from bitter to silky and rich.","region":"Alsace","meal_type":"side","course":"side","cook_time_min":25,"prep_time_min":10,"servings":6,"calories":140,"protein":8,"carbs":6,"fat":9,"wife_safe":true,"wife_notes":"Her portion: braise without lardons, use olive oil instead of butter. Riesling is fine. Endive is low FODMAP.","kid_friendly":false,"batch_cook":true,"week_introduced":4,"notes":"Batch-cooked Sunday. Goes with chicken for weekday lunches. Alsatian heritage recipe.","tags":["GF","DF-adaptable","batch-cook","Alsace","heritage","side"],"ingredients":[{"name":"Belgian endive, halved","amount":"4","unit":"heads"},{"name":"Lardons or pancetta","amount":"4","unit":"oz"},{"name":"Butter","amount":"2","unit":"tbsp"},{"name":"Riesling or dry white wine","amount":"0.5","unit":"cup"},{"name":"Fresh thyme","amount":"3","unit":"sprigs"}],"steps":["Brown lardons in a wide pan. Remove and set aside.","Add butter, brown endive cut-side down 3-4 min until golden.","Return lardons, add Riesling and thyme. Cover and braise 20 min on low.","Endive should be completely tender and wine reduced to a glaze.","Store and reheat through the week."]},{"id":32,"name":"Oeufs Cocotte aux Epinards","name_french":"Oeufs Cocotte","description":"Eggs baked in ramekins over wilted spinach and creme fraiche in a bain-marie. Whites just set, yolks runny. Elegant and effortless Thursday dinner.","region":"France — classic bistro","meal_type":"dinner","course":"main","cook_time_min":20,"prep_time_min":10,"servings":5,"calories":420,"protein":28,"carbs":6,"fat":28,"wife_safe":true,"wife_notes":"Naturally GF/DF. Skip creme fraiche for her — olive oil in the ramekin instead. Spinach naturally clean.","kid_friendly":true,"batch_cook":false,"week_introduced":4,"notes":"Bain-marie is essential — direct oven heat overcooks the eggs. Serve immediately, they continue cooking in the ramekin.","tags":["GF","DF-adaptable","eggs","bistro","quick","family"],"ingredients":[{"name":"Eggs","amount":"10","unit":"whole"},{"name":"Baby spinach","amount":"1","unit":"large bag"},{"name":"Creme fraiche","amount":"5","unit":"tbsp"},{"name":"Garlic, minced","amount":"2","unit":"cloves"},{"name":"Butter","amount":"for ramekins","unit":""},{"name":"Gruyere, grated","amount":"optional","unit":""}],"steps":["Wilt spinach in olive oil with garlic. Season and squeeze out excess water.","Butter ramekins (olive oil for wife's). Place spinach in each.","Add 1 tbsp creme fraiche per ramekin. Crack 2 eggs over the cream.","Place in baking dish with boiling water halfway up sides — bain-marie.","Bake at 375F for 12-14 min until whites just set, yolks runny. Serve immediately."]},{"id":26,"name":"Poireaux Braisés","name_french":"Poireaux Braisés","description":"Leeks halved and slow-braised in white wine and butter until completely silky. A Loire staple — mild, sweet, extraordinary under roasted chicken.","region":"Loire Valley","meal_type":"side","course":"side","cook_time_min":30,"prep_time_min":10,"servings":6,"calories":110,"protein":2,"carbs":10,"fat":7,"wife_safe":true,"wife_notes":"Pull her portion before butter — braise in olive oil and wine only. Leeks in small amounts are generally low FODMAP.","kid_friendly":true,"batch_cook":true,"week_introduced":4,"notes":"Batch-cooked Sunday. Reheat gently with a splash of water. Goes with chicken, fish, or eggs all week.","tags":["GF","DF-adaptable","batch-cook","Loire","side","vegetable"],"ingredients":[{"name":"Leeks, halved lengthways","amount":"4","unit":"large"},{"name":"Dry white wine","amount":"0.5","unit":"cup"},{"name":"Butter","amount":"3","unit":"tbsp"},{"name":"Chicken stock or water","amount":"0.25","unit":"cup"},{"name":"Fresh thyme","amount":"4","unit":"sprigs"},{"name":"Salt and black pepper","amount":"to taste","unit":""}],"steps":["Trim leeks and halve lengthways. Wash thoroughly.","Melt butter in a wide pan. Pull wife's leeks before butter — use olive oil for her batch.","Add leeks cut-side down. Brown lightly 3-4 min.","Add wine, stock, thyme. Cover and braise on low 25 min until completely soft.","Season. Store in cooking liquid. Reheat gently through the week."]},{"id":30,"name":"Porc a la Choucroute Legere","name_french":"Choucroute Legere","description":"Ground pork braised with shredded cabbage, lardons, Riesling, and caraway. A light weeknight choucroute — Alsatian heritage without spending all day cooking.","region":"Alsace","meal_type":"dinner","course":"main","cook_time_min":30,"prep_time_min":15,"servings":5,"calories":560,"protein":50,"carbs":22,"fat":26,"wife_safe":true,"wife_notes":"GF naturally. Skip lardons for her. Olive oil instead of pork fat. Caraway and Riesling are low FODMAP fine.","kid_friendly":true,"batch_cook":false,"week_introduced":4,"notes":"Cornichons on the table — mandatory. Serve with mustard on the side.","tags":["GF","DF-adaptable","high-protein","Alsace","heritage","family"],"ingredients":[{"name":"Ground pork","amount":"1.5","unit":"lbs"},{"name":"Green cabbage, shredded","amount":"0.5","unit":"head"},{"name":"Lardons or pancetta","amount":"4","unit":"oz"},{"name":"Riesling or dry white wine","amount":"0.5","unit":"cup"},{"name":"Caraway seeds","amount":"1","unit":"tsp"},{"name":"Dijon mustard","amount":"2","unit":"tsp"},{"name":"Shallots, minced","amount":"2","unit":"whole"},{"name":"Potatoes, cubed","amount":"1","unit":"lb"}],"steps":["Boil potatoes until just tender. Set aside.","Render lardons in a large pan. Remove and set aside.","Brown ground pork in the same fat. Season with caraway, shallot, salt.","Add cabbage and Riesling. Cover and braise 15 min until cabbage is silky.","Stir in Dijon, add potatoes and lardons. Serve with cornichons."]},{"id":29,"name":"Poulet aux Lentilles et Estragon","name_french":"Poulet aux Lentilles et Estragon","description":"Batch chicken over French lentils with a tarragon and creme fraiche sauce. Classic Paris bistro Tuesday — elegant, fast, high protein.","region":"France — Paris bistro","meal_type":"dinner","course":"main","cook_time_min":15,"prep_time_min":5,"servings":5,"calories":560,"protein":56,"carbs":28,"fat":20,"wife_safe":true,"wife_notes":"Pull lentils before shallot for her. Use coconut cream or skip — finish with olive oil and lemon instead. Tarragon is fine. Naturally GF.","kid_friendly":false,"batch_cook":false,"week_introduced":4,"notes":"Tarragon is the key — do not skip it. Fresh is best, dried works. Tastes like a Paris bistro on a Tuesday.","tags":["GF","DF-adaptable","high-protein","bistro","lentils","tarragon"],"ingredients":[{"name":"Batch chicken, pulled or sliced","amount":"5-6","unit":"oz per person"},{"name":"French lentils, cooked","amount":"3","unit":"cups"},{"name":"Creme fraiche","amount":"3","unit":"tbsp"},{"name":"Fresh tarragon, chopped","amount":"1","unit":"large handful"},{"name":"Shallots, minced","amount":"2","unit":"whole"},{"name":"Chicken stock","amount":"0.5","unit":"cup"},{"name":"Dijon mustard","amount":"1","unit":"tsp"},{"name":"Lemon","amount":"1","unit":"whole"}],"steps":["Warm lentils with shallot and a splash of stock. Pull wife's portion before shallot.","Stir in Dijon, creme fraiche, half the tarragon. Season with salt and lemon.","Warm chicken in a pan with a knob of butter.","Plate lentils, chicken on top, remaining tarragon over everything."]},{"id":35,"name":"Poulet et Poireaux Braises","name_french":"Poulet et Poireaux","description":"Batch chicken over braised leeks with olive oil and lemon. A simple Loire assembly that tastes more refined than its effort.","region":"Loire Valley","meal_type":"lunch","course":"main","cook_time_min":5,"prep_time_min":5,"servings":1,"calories":520,"protein":52,"carbs":10,"fat":24,"wife_safe":true,"wife_notes":"Leeks braised in olive oil and wine for her (no butter). Chicken naturally GF/DF. Identical plate.","kid_friendly":true,"batch_cook":false,"week_introduced":4,"notes":"Assembly from Sunday batch components. 5 minutes.","tags":["GF","DF-adaptable","high-protein","quick-assembly","Loire","batch-lunch"],"ingredients":[{"name":"Batch chicken, sliced or pulled","amount":"5-6","unit":"oz"},{"name":"Braised leeks (batch)","amount":"2","unit":"halves"},{"name":"Olive oil","amount":"1","unit":"drizzle"},{"name":"Lemon","amount":"1","unit":"squeeze"},{"name":"Black pepper","amount":"to taste","unit":""}],"steps":["Warm braised leeks gently with a splash of water or stock.","Slice or pull batch chicken over the top.","Finish with olive oil, lemon squeeze, black pepper."]},{"id":28,"name":"Salade d'Endive au Poulet","name_french":"Salade d'Endive au Poulet","description":"Braised endive with batch chicken, walnuts, and Dijon vinaigrette. An Alsatian bistro lunch that uses Sunday's batch components.","region":"Alsace","meal_type":"lunch","course":"main","cook_time_min":0,"prep_time_min":8,"servings":1,"calories":490,"protein":50,"carbs":8,"fat":24,"wife_safe":true,"wife_notes":"Her endive portion without lardons, braised in olive oil. Skip walnuts if sensitivity. Full plate.","kid_friendly":false,"batch_cook":false,"week_introduced":4,"notes":"Assembly from batch components. A proper Alsatian bistro lunch.","tags":["GF","DF-adaptable","high-protein","quick-assembly","Alsace","batch-lunch"],"ingredients":[{"name":"Braised endive (batch)","amount":"2","unit":"halves"},{"name":"Batch chicken, sliced","amount":"5-6","unit":"oz"},{"name":"Walnuts, roughly chopped","amount":"1","unit":"small handful"},{"name":"Dijon vinaigrette","amount":"1.5","unit":"tbsp"},{"name":"Mixed greens","amount":"1","unit":"cup"}],"steps":["Warm endive gently in a pan.","Arrange on plate with greens and sliced chicken.","Scatter walnuts. Dress with Dijon vinaigrette."]},{"id":31,"name":"Salade de Thon Pommes de Terre","name_french":"Salade de Thon Pommes de Terre","description":"Tuna with warm potatoes, green beans, hard-boiled eggs, anchovies, and olives dressed in vinaigrette. A composed dinner salad, not a side dish.","region":"Cote d'Azur — Nicoise variation","meal_type":"dinner","course":"main","cook_time_min":20,"prep_time_min":10,"servings":5,"calories":540,"protein":52,"carbs":32,"fat":20,"wife_safe":true,"wife_notes":"Naturally GF/DF. Skip anchovy if desired. No modifications needed.","kid_friendly":true,"batch_cook":false,"week_introduced":4,"notes":"Dress the potatoes while still warm — they absorb the vinaigrette. This is dinner, not a side salad.","tags":["GF","DF","high-protein","family","composed-salad"],"ingredients":[{"name":"Tuna in olive oil","amount":"4","unit":"cans"},{"name":"Potatoes, boiled warm","amount":"1.5","unit":"lbs"},{"name":"Green beans, blanched","amount":"0.5","unit":"lb"},{"name":"Hard-boiled eggs","amount":"5","unit":"whole"},{"name":"Anchovy fillets","amount":"10","unit":"whole"},{"name":"Nicoise olives","amount":"1","unit":"handful"},{"name":"Vinaigrette","amount":"generous","unit":""},{"name":"Fresh parsley","amount":"1","unit":"handful"}],"steps":["Slice potatoes while warm. Dress immediately with vinaigrette.","Arrange potatoes, beans, eggs, and tuna on a large platter.","Lay anchovies and olives over everything. Parsley on top.","More vinaigrette at the table. Bread on the side."]},{"id":25,"name":"Sardines Grillées à la Nantaise","name_french":"Sardines Grillées","description":"Grilled fresh sardines with lemon, parsley, and thyme over roasted potatoes. Pure Loire coast — simple, fast, and deeply satisfying.","region":"Nantes — Loire-Atlantique","meal_type":"dinner","course":"main","cook_time_min":15,"prep_time_min":10,"servings":5,"calories":480,"protein":46,"carbs":28,"fat":18,"wife_safe":true,"wife_notes":"Naturally GF/DF. No modifications needed. Potatoes roasted in olive oil.","kid_friendly":true,"batch_cook":false,"week_introduced":4,"notes":"Sardines cook very fast — 2-3 min per side. Score them 3 times so the skin crisps evenly. Eat outside if possible.","tags":["GF","DF","high-protein","Nantes","Loire","heritage","seafood","quick"],"ingredients":[{"name":"Fresh sardines or mackerel","amount":"2","unit":"lbs"},{"name":"Olive oil","amount":"4","unit":"tbsp"},{"name":"Lemons","amount":"3","unit":"whole"},{"name":"Fresh parsley + thyme","amount":"generous","unit":""},{"name":"Potatoes, cut in wedges","amount":"2","unit":"lbs"},{"name":"Flaky sea salt","amount":"to finish","unit":""}],"steps":["Roast potato wedges at 425F with olive oil, salt, thyme — 35 min, turning once.","Score sardines 3 times on each side. Rub with olive oil, salt, thyme.","Grill or pan-sear over high heat — 2-3 min per side. They cook fast.","Squeeze lemon over everything. Parsley on top. Flaky salt. Serve immediately.","Eat outside if possible. This is a summer Loire coast dish."]},{"id":34,"name":"Thon aux Lentilles","name_french":"Thon aux Lentilles","description":"Canned tuna flaked over warm French lentils dressed with Dijon and lemon. Capers and olives scattered over. Five-minute high-protein lunch.","region":"France — bistro","meal_type":"lunch","course":"main","cook_time_min":5,"prep_time_min":3,"servings":1,"calories":480,"protein":50,"carbs":28,"fat":14,"wife_safe":true,"wife_notes":"Naturally GF/DF. Lentils without shallot for her. Full plate, no changes.","kid_friendly":false,"batch_cook":false,"week_introduced":4,"notes":"Uses batch lentils. Assembly only. Takes 5 minutes.","tags":["GF","DF","high-protein","quick-assembly","no-cook","batch-lunch","lentils"],"ingredients":[{"name":"Tuna in olive oil","amount":"1","unit":"can"},{"name":"French lentils, cooked","amount":"0.75","unit":"cup"},{"name":"Capers","amount":"1","unit":"tsp"},{"name":"Nicoise olives","amount":"6","unit":"whole"},{"name":"Dijon mustard","amount":"0.5","unit":"tsp"},{"name":"Lemon","amount":"1","unit":"squeeze"},{"name":"Olive oil","amount":"1","unit":"drizzle"}],"steps":["Warm lentils with Dijon, lemon, and olive oil. Season.","Drain tuna and flake over the top.","Scatter capers and olives. Done."]}];
+
+/* ============ TRAINING PROGRAM ============ */
+const PROGRAM = {
+  philosophy: "Nutrition drives the weight. Strength protects the muscle while it comes off. Walks and the ruck are the engine — they stay exactly as they are. No high-impact HIIT: at current bodyweight it costs more in joints than it buys in conditioning.",
+  progression: "Hit all sets and reps with good form → add 5 lbs next week. Miss reps → same weight next week. Simple, forever.",
+  mobility: {
+    title: "Morning Mobility", duration: "10 min · every day",
+    moves: [
+      {name:"Hip 90/90", detail:"Both legs at 90°, lean into front hip. 45 sec each side."},
+      {name:"World's Greatest Stretch", detail:"Lunge forward, drop back knee, rotate chest open. 5 reps each side."},
+      {name:"Thoracic Opener", detail:"Hands and knees, thread arm under body, rotate chest to ceiling. 8 reps each side."},
+      {name:"Hip Flexor Stretch", detail:"Kneeling lunge, squeeze glute of back leg, lean forward. 45 sec each side."},
+      {name:"Hamstring Stretch", detail:"Hinge at hip, don't round the back. 30 sec each side."},
+      {name:"Sleeper Stretch ★", detail:"Shoulder recovery. Lie on the injured side, arm at 90°, opposite hand gently presses forearm toward floor. 30 sec × 3. Never force it."}
+    ]
+  },
+  workouts: {
+    A: { title:"Workout A — Full Body", day:"Monday", exercises:[
+      {name:"Barbell Back Squat", sets:"3 × 8", detail:"Rest 90 sec", cues:["Bar on upper back, feet shoulder-width, toes slightly out","Push knees out, chest tall, brace before each rep","Depth to where heels stay flat and back stays neutral","Start light — add 5 lbs a week for months, that's the win"]},
+      {name:"DB Floor Press", sets:"3 × 10", detail:"Shoulder-friendly press", cues:["Lie on the floor, knees bent, dumbbells over chest","Elbows at ~45°, touch triceps to floor each rep","The floor limits range — that's the point for your shoulder","Press up without flaring the elbows"]},
+      {name:"Dumbbell Row", sets:"3 × 10 each side", detail:"Go heavy — shoulder loves these", cues:["One hand on bench, back flat and parallel to floor","Pull dumbbell to hip, elbow drives back not up","No torso rotation — stable hips and spine"]},
+      {name:"Farmer Carry", sets:"3 × 30 yards", detail:"Heaviest DBs you have", cues:["Stand tall, shoulders back and down","Short controlled steps, core braced the whole time","If 30 yards feels easy, the weight isn't heavy enough"]},
+      {name:"Dead Bug", sets:"3 × 10", detail:"Slow and controlled", cues:["Press lower back into the floor — keep it there","Extend opposite arm and leg slowly toward floor","If your back arches, shorten the range","Slow is everything here"]}
+    ]},
+    B: { title:"Workout B — Full Body", day:"Wednesday", exercises:[
+      {name:"Romanian Deadlift", sets:"3 × 10", detail:"Feel the hinge", cues:["Push hips back, not down — bar stays close to legs","Stop at a strong hamstring stretch, before the back rounds","Drive hips forward to stand, squeeze glutes at top"]},
+      {name:"Inverted Row", sets:"3 × 8", detail:"Pullup builder", cues:["Bar in the rack at hip height, hang below it, body like a plank","Pull chest to bar, squeeze shoulder blades","Harder = feet elevated. Easier = bend knees.","This builds exactly the muscles your first pullup needs"]},
+      {name:"Half-Kneeling DB Press", sets:"3 × 8 each side", detail:"Neutral grip · conservative load", cues:["One knee down, press one dumbbell with palm facing in","Neutral grip is the friendliest overhead angle for your shoulder","Stop short of lockout, no grinding reps","Anything pinches — stop and note it"]},
+      {name:"Split Squat", sets:"3 × 8 each leg", detail:"Bodyweight or light DBs", cues:["Rear foot on the floor (not elevated) to start","Lower straight down, front knee tracks over toes","Torso upright, core braced","Progress to rear-foot-elevated when 3×8 is smooth"]},
+      {name:"Band Pull-Apart", sets:"3 × 15", detail:"Rear delts · shoulder health", cues:["Arms straight, pull the band to your chest","Squeeze shoulder blades together, control the return","Light band, perfect reps — this is medicine, not ego"]}
+    ]},
+    C: { title:"Workout C — Full Body", day:"Friday", exercises:[
+      {name:"Deadlift", sets:"3 × 5", detail:"Heaviest lift of the week · rest 2 min", cues:["Bar over mid-foot, hip-width stance","Big breath, brace, then push the floor away","Bar stays in contact with shins and thighs","Lock out with glutes — don't hyperextend"]},
+      {name:"Goblet Squat", sets:"2 × 10", detail:"Lighter — move well", cues:["Dumbbell at chest, elbows down","Sit between your knees, chest tall","This is a movement-quality set, not a max effort"]},
+      {name:"Band-Assisted Pullup / Negatives", sets:"3 × 5", detail:"The pullup project", cues:["Loop a band over the bar, knee or foot in it, pull chin over","Too hard? Do negatives: jump to the top, lower for 5 slow seconds","Every 10 lbs of bodyweight lost is 10 lbs less to pull","First strict pullup is the milestone — it's coming"]},
+      {name:"DB Floor Press", sets:"2 × 10", detail:"Second weekly press dose", cues:["Same setup as Monday","Slightly lighter, crisp reps"]},
+      {name:"Dead Hang", sets:"3 × 20–30 sec", detail:"Goal: 60 sec", cues:["Full hang, arms straight, let shoulders relax upward","Decompressing feeling = excellent. Sharp pain = step down.","Grip, shoulder health, and spine decompression in one move"]}
+    ]}
+  },
+  conditioning: [
+    {day:"Mon–Fri", text:"Lunch walk, most weekdays. Non-negotiable easy movement — keep it."},
+    {day:"Tue", text:"Evening walk/run, 2–3 miles, conversational effort."},
+    {day:"Thu", text:"Evening walk/run, 2–3 miles. Notice how the legs feel after Wednesday's session."},
+    {day:"Sat", text:"Ruck — 2–3 miles, 30 lb pack. At your bodyweight this is a genuinely hard session. When it feels easy: add distance first, then weight."}
+  ],
+  pullupPath: "Dead hangs build grip and shoulder tolerance → inverted rows build the pulling muscles → band-assisted reps and negatives groove the exact movement → bodyweight drops → first strict pullup.",
+  hiitNote: "High-impact HIIT (jump squats, plank jacks, mountain climbers) is shelved on purpose. It's the hardest possible version of conditioning at 270 lbs and your walk/run + ruck already cover that base. Revisit low-impact intervals (KB swings, step-ups, bike) later if you want them — optional spice, not the meal."
+};
+
+/* ============ THIS WEEK ============ */
+const WEEK = {
+  label: "Week of Jul 11–17",
+  eyebrow: "Week 14 of 20 · Phase 2 · Family of 5",
+  pills: ["Jul 11–17", "Strong · Fast · Mobile", "Agee Program"],
+  days: [
+    {id:"sat", name:"Sat", num:11, date:"Saturday · July 11", title:"Marché Day", badges:[["shop","🛒 Shopping"],["ruck","🎒 Ruck"],["mobility","🧘 Mobility"],["family","👨‍👩‍👦 Family"]],
+      conditioning:{type:"ruck", header:"🎒 Ruck", main:"2–3 miles · 30 lb pack", detail:"Steady pace, before the heat if you can. When it starts feeling easy, add distance before adding weight."},
+      meals:[
+        {time:"Breakfast", recipe:"Tartine au Beurre", desc:"Bread, butter, café au lait. Wife: GF bread + yogurt and fruit."},
+        {time:"Lunch", recipe:"Plateau Charcuterie", desc:"The board — jambon, cheese, cornichons, olives. Everyone builds their own."},
+        {time:"Dinner", recipe:"Moules Marinières", desc:"Mussels, Nantes-style. Big pot at the table, bread for dipping. Kids love the theater of it."}
+      ],
+      shopping:[
+        {section:"Proteins — scaled for 5", items:["Whole chickens × 2 (~4 lbs each) — Sunday roast batch","Mussels (4–5 lbs) — Saturday dinner","Cod fillets × 6 (6 oz each) — Wednesday","Pork tenderloin (2 lbs) — Thursday","Ground turkey or chicken thighs (1.5 lbs) — Tuesday","Tuna in olive oil (5 cans)","Eggs (2 dozen + 6 for piperade)","Jambon (sliced ham) — charcuterie + breakfast","Anchovy fillets (1 tin)","Lardons or thick-cut bacon (6 oz) — Friday tarte flambée"]},
+        {section:"Produce", items:["Bell peppers (6 — red + yellow) — piperade batch","Tomatoes (8–10 medium) — piperade + salads","Fennel bulbs (2) — Wednesday cod","Haricots verts / green beans (2 lbs)","Leeks (4) — braises","Zucchini (3)","Carrots (1 large bunch)","Mixed salad greens (2 bags)","Lemons (6)","Garlic (2 heads)","Shallots (4) — skip for wife's portions","Fresh thyme + tarragon + basil","Onions (3 large) — tarte flambée"]},
+        {section:"Pantry, Dairy & Bread", items:["Sourdough / country loaf (2)","GF bread or crackers — for wife","Breton butter (unsalted + salted)","Crème fraîche — tarte flambée","Whole milk plain yogurt (32 oz)","French lentils (dry, 1 lb)","White beans / cannellini (2 cans)","Niçoise olives (jar)","Dijon mustard (check stock)","Dry white wine (1 bottle — moules + cooking)","Comté or Gruyère","Brie or soft cheese — Friday cheese course","Tarte flambée bases (thin crust) + GF flatbread for wife"]}
+      ]},
+    {id:"sun", name:"Sun", num:12, date:"Sunday · July 12", title:"Prep Day", badges:[["prep","🍳 Batch Cook"],["mobility","🧘 Mobility"],["family","👨‍👩‍👦 Family"]],
+      meals:[
+        {time:"Breakfast", recipe:"Tartine au Beurre", desc:"Standard French morning. Café au lait for the adults."},
+        {time:"Lunch", recipe:null, name:"Le Déjeuner du Cuisinier", desc:"Cook's lunch — whatever's coming together in the kitchen, bread, a piece of Comté."},
+        {time:"Dinner", recipe:"Poulet Rôti aux Herbes de Provence", desc:"The Sunday roast — one chicken for dinner, one for the week. Roasted veg, green salad."}
+      ],
+      prep:[
+        {time:"10:00", task:"Season both chickens", detail:"Herbes de Provence, butter under skin (olive oil for the bird if wife's eating skin), lemon inside, salt all over. Oven to 400°F.", dur:"20 min active"},
+        {time:"10:20", task:"Both chickens in the oven", detail:"400°F, ~1 hr 15 min. Baste once at 45 min.", dur:"hands-off"},
+        {time:"10:30", task:"Make piperade (big batch)", detail:"Peppers, tomato, olive oil. Pull wife's portion before onion/garlic go in. Feeds Monday dinner + Thursday lunch.", dur:"~35 min"},
+        {time:"11:10", task:"Cook lentils (double batch)", detail:"Bay leaf, thyme. Wife's portion out before shallot. For Tuesday dinner + salads.", dur:"~25 min"},
+        {time:"11:35", task:"Blanch haricots verts + hard-boil 10 eggs", detail:"Beans: 2 min boil, ice bath. Eggs for niçoise + snacks through the week.", dur:"~20 min"},
+        {time:"12:00", task:"Vinaigrette jar", detail:"Dijon, red wine vinegar, olive oil (shallot in Josh's jar only — make a small clean jar for wife).", dur:"5 min"},
+        {time:"13:30", task:"Pull chickens, carve one for dinner", detail:"Second bird pulled and fridged — weekday lunches.", dur:"15 min"}
+      ],
+      note:{wife:true, text:"🟣 <strong>Wife's Sunday note:</strong> Piperade and lentils portioned before onion/shallot/garlic. Chicken naturally GF/DF (olive oil finish for her). Separate clean vinaigrette jar. She eats the same table as everyone all week."}},
+    {id:"mon", name:"Mon", num:13, date:"Monday · July 13", title:"Strength A", badges:[["strength","💪 Workout A"],["mobility","🧘 Mobility"],["run","🚶 Lunch Walk"]],
+      workout:"A",
+      meals:[
+        {time:"Breakfast", recipe:"Tartine au Beurre", desc:"Bread, butter, café au lait."},
+        {time:"Lunch", recipe:"Salade de Poulet aux Herbes", desc:"Batch chicken over greens, herbs, vinaigrette. High protein, zero cooking."},
+        {time:"Dinner", recipe:"Œufs en Piperade", desc:"Eggs poached in Sunday's piperade. Kids get bread; wife gets her clean batch."}
+      ]},
+    {id:"tue", name:"Tue", num:14, date:"Tuesday · July 14", title:"Conditioning", badges:[["run","🏃 Walk/Run"],["mobility","🧘 Mobility"]],
+      conditioning:{type:"run", header:"🏃 Evening Walk/Run", main:"2–3 miles · conversational", detail:"Easy effort after work. If yesterday's squats are talking, walk more and run less — the miles count either way."},
+      meals:[
+        {time:"Breakfast", recipe:"Tartine au Beurre", desc:"Bread, butter, café au lait."},
+        {time:"Lunch", recipe:"Salade Niçoise", desc:"Tuna, egg, haricots verts, olives, anchovy. Composed, never tossed."},
+        {time:"Dinner", recipe:"Poulet aux Lentilles et Estragon", desc:"Chicken with Sunday's lentils and tarragon. Paris bistro on a Tuesday."}
+      ]},
+    {id:"wed", name:"Wed", num:15, date:"Wednesday · July 15", title:"Strength B", badges:[["strength","💪 Workout B"],["mobility","🧘 Mobility"],["run","🚶 Lunch Walk"]],
+      workout:"B",
+      meals:[
+        {time:"Breakfast", recipe:"Tartine au Beurre", desc:"Bread, butter, café au lait."},
+        {time:"Lunch", recipe:"Salade de Poulet aux Herbes", desc:"Round two — batch chicken, greens, vinaigrette."},
+        {time:"Dinner", recipe:"Cabillaud au Fenouil", desc:"Cod roasted over fennel, Nantes-style. Naturally GF/DF for everyone."}
+      ]},
+    {id:"thu", name:"Thu", num:16, date:"Thursday · July 16", title:"Conditioning", badges:[["run","🏃 Walk/Run"],["mobility","🧘 Mobility"]],
+      conditioning:{type:"run", header:"🏃 Evening Walk/Run", main:"2–3 miles · conversational", detail:"Same as Tuesday. Still easy — the strength work is where you push this week."},
+      meals:[
+        {time:"Breakfast", recipe:"Tartine au Beurre", desc:"Bread, butter, café au lait."},
+        {time:"Lunch", recipe:"Thon à la Piperade", desc:"Tuna over Sunday's piperade. Basque lunch in two minutes."},
+        {time:"Dinner", recipe:"Porc aux Légumes Verts", desc:"Pork tenderloin with haricots verts and leeks."}
+      ]},
+    {id:"fri", name:"Fri", num:17, date:"Friday · July 17", title:"Strength C", badges:[["strength","💪 Workout C"],["mobility","🧘 Mobility"],["family","👨‍👩‍👦 Family"]],
+      workout:"C",
+      meals:[
+        {time:"Breakfast", recipe:"Tartine au Beurre", desc:"Bread, butter, café au lait."},
+        {time:"Lunch", recipe:"Poulet Rôti + Haricots Blancs au Pistou", desc:"Last of the batch chicken, white beans, greens. Clean out the fridge."},
+        {time:"Dinner", recipe:"Tarte Flambée (Flammekueche)", desc:"Friday family dinner — thin crust, crème fraîche, onion, lardons. GF flatbread version for wife. Cheese course after."}
+      ],
+      note:{wife:false, text:"🧀 <strong>Vendredi soir:</strong> Cheese course after dinner — Comté, Brie, a little bread. Deadlifts done, week done. Pour yourself a glass of something."}}
+  ]
+};
+
+/* ============ RENDERING ============ */
+function esc(s){return String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));}
+
+function switchView(v){
+  document.querySelectorAll('.view').forEach(x=>x.classList.remove('active'));
+  document.querySelectorAll('.main-tab').forEach(x=>x.classList.remove('active'));
+  document.getElementById('view-'+v).classList.add('active');
+  document.querySelector('.main-tab[data-view="'+v+'"]').classList.add('active');
+  window.scrollTo(0,0);
+}
+
+/* --- header --- */
+document.getElementById('hdrMeta').innerHTML = WEEK.pills.map((p,i)=>'<span class="meta-pill'+(i===0?' accent':'')+'">'+esc(p)+'</span>').join('');
+document.getElementById('hdrEyebrow').textContent = WEEK.eyebrow;
+
+/* --- week view --- */
+function findRecipe(name){ return RECIPES.find(r=>r.name===name) || null; }
+
+function renderWeek(){
+  const nav = document.getElementById('dayNav');
+  const panels = document.getElementById('dayPanels');
+  nav.innerHTML = WEEK.days.map(d=>'<div class="day-tab" data-day="'+d.id+'" onclick="switchDay(\''+d.id+'\')"><div class="day-tab-name">'+d.name+'</div><div class="day-tab-num">'+d.num+'</div></div>').join('');
+  panels.innerHTML = WEEK.days.map(d=>{
+    let h = '<div class="day-panel-view" id="daypanel-'+d.id+'"><div class="panel-pad">';
+    h += '<div class="day-header"><div class="day-full-date">'+esc(d.date)+'</div><div class="day-title">'+esc(d.title)+'</div>';
+    h += '<div class="day-badges">'+d.badges.map(b=>'<span class="badge badge-'+b[0]+'">'+b[1]+'</span>').join('')+'</div></div>';
+    h += '<div class="mobility-block" onclick="openMobility()"><div class="mobility-header"><span>Morning Mobility · 10 min</span><span>→</span></div><div class="mobility-moves">'+PROGRAM.mobility.moves.map(m=>'<span class="mobility-pill">'+esc(m.name)+'</span>').join('')+'</div></div>';
+    if(d.conditioning){
+      h += '<div class="cond-block '+(d.conditioning.type==='ruck'?'ruck':'')+'"><div class="cond-header">'+esc(d.conditioning.header)+'</div><div class="cond-main">'+esc(d.conditioning.main)+'</div><div class="cond-detail">'+esc(d.conditioning.detail)+'</div></div>';
+    }
+    if(d.workout){
+      const w = PROGRAM.workouts[d.workout];
+      h += '<div class="card"><div class="card-header"><span class="card-title">💪 '+esc(w.title)+'</span></div><div class="card-body">';
+      h += w.exercises.map((ex,i)=>'<div class="exercise-row" onclick="openExercise(\''+d.workout+'\','+i+')"><div class="exercise-num">'+(i+1)+'</div><div class="exercise-info"><div class="exercise-name">'+esc(ex.name)+'</div><div class="exercise-sets">'+esc(ex.sets)+' — '+esc(ex.detail)+'</div></div><div class="meal-arrow">→</div></div>').join('');
+      h += '</div></div>';
+    }
+    h += '<div class="card"><div class="card-header"><span class="card-title">🍽️ Meals — Family</span></div><div class="card-body">';
+    h += d.meals.map(m=>{
+      const r = m.recipe ? findRecipe(m.recipe) : null;
+      const nm = r ? r.name : (m.name || m.recipe || '');
+      const tag = r ? (r.wife_safe ? '<span class="wife-tag">GF · DF</span>' : '<span class="wife-tag">adaptable</span>') : '';
+      const click = r ? ' onclick="openRecipe('+r.id+')"' : '';
+      return '<div class="meal-row"'+click+'><div class="meal-time">'+esc(m.time)+'</div><div class="meal-info"><div class="meal-name">'+esc(nm)+tag+'</div><div class="meal-desc">'+esc(m.desc)+'</div></div>'+(r?'<div class="meal-arrow">→</div>':'')+'</div>';
+    }).join('');
+    h += '</div></div>';
+    if(d.prep){
+      h += '<div class="card"><div class="card-header"><span class="card-title">🍳 Sunday Prep Timeline</span></div><div class="card-body">';
+      h += d.prep.map(p=>'<div class="prep-step" onclick="this.classList.toggle(\'done\')"><div class="prep-time-col"><div class="prep-time">'+esc(p.time)+'</div></div><div class="prep-line-col"><div class="prep-dot"></div><div class="prep-line"></div></div><div class="prep-content"><div class="prep-task">'+esc(p.task)+'</div><div class="prep-detail">'+esc(p.detail)+'</div><div class="prep-duration">'+esc(p.dur)+'</div></div></div>').join('');
+      h += '</div></div>';
+    }
+    if(d.shopping){
+      h += '<div class="card"><div class="card-header"><span class="card-title">🛒 Shopping List — Family of 5</span></div><div class="card-body">';
+      h += d.shopping.map(s=>'<div class="shop-section"><div class="shop-section-title">'+esc(s.section)+'</div>'+s.items.map(it=>'<div class="shop-item" onclick="this.classList.toggle(\'checked\')"><div class="shop-check"></div><span class="shop-label">'+esc(it)+'</span></div>').join('')+'</div>').join('');
+      h += '</div></div>';
+    }
+    if(d.note){ h += '<div class="note-block'+(d.note.wife?' wife':'')+'"><div class="note-text">'+d.note.text+'</div></div>'; }
+    h += '</div></div>';
+    return h;
+  }).join('');
+}
+function switchDay(id){
+  document.querySelectorAll('.day-panel-view').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.day-tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById('daypanel-'+id).classList.add('active');
+  document.querySelector('.day-tab[data-day="'+id+'"]').classList.add('active');
+}
+
+/* --- training view --- */
+function renderTraining(){
+  let h = '';
+  h += '<div class="section-heading">The Program</div>';
+  h += '<div class="section-sub">'+esc(PROGRAM.philosophy)+'</div>';
+  h += '<div class="card"><div class="card-header"><span class="card-title">📅 Weekly Rhythm</span></div><div class="card-body">';
+  h += '<div class="rhythm-row"><div class="rhythm-day">Mon</div><div class="rhythm-text"><strong>Strength A</strong> + lunch walk</div></div>';
+  h += '<div class="rhythm-row"><div class="rhythm-day">Tue</div><div class="rhythm-text">Lunch walk + evening walk/run 2–3 mi</div></div>';
+  h += '<div class="rhythm-row"><div class="rhythm-day">Wed</div><div class="rhythm-text"><strong>Strength B</strong> + lunch walk</div></div>';
+  h += '<div class="rhythm-row"><div class="rhythm-day">Thu</div><div class="rhythm-text">Lunch walk + evening walk/run 2–3 mi</div></div>';
+  h += '<div class="rhythm-row"><div class="rhythm-day">Fri</div><div class="rhythm-text"><strong>Strength C</strong> + lunch walk</div></div>';
+  h += '<div class="rhythm-row"><div class="rhythm-day">Sat</div><div class="rhythm-text"><strong>Ruck</strong> 2–3 mi · 30 lb pack · Marché day</div></div>';
+  h += '<div class="rhythm-row"><div class="rhythm-day">Sun</div><div class="rhythm-text">Rest + batch prep · mobility only</div></div>';
+  h += '</div></div>';
+  ['A','B','C'].forEach(k=>{
+    const w = PROGRAM.workouts[k];
+    h += '<div class="workout-card"><div class="workout-card-head"><div class="workout-card-eyebrow">'+esc(w.day)+' · ~40 min</div><div class="workout-card-title">'+esc(w.title)+'</div></div><div class="card-body">';
+    h += w.exercises.map((ex,i)=>'<div class="exercise-row" onclick="openExercise(\''+k+'\','+i+')"><div class="exercise-num">'+(i+1)+'</div><div class="exercise-info"><div class="exercise-name">'+esc(ex.name)+'</div><div class="exercise-sets">'+esc(ex.sets)+' — '+esc(ex.detail)+'</div></div><div class="meal-arrow">→</div></div>').join('');
+    h += '</div></div>';
+  });
+  h += '<div class="card"><div class="card-header"><span class="card-title">🔁 Progression Rule</span></div><div class="card-body"><div class="note-text">'+esc(PROGRAM.progression)+'</div></div></div>';
+  h += '<div class="card"><div class="card-header"><span class="card-title">🧗 The Pullup Project</span></div><div class="card-body"><div class="note-text">'+esc(PROGRAM.pullupPath)+'</div></div></div>';
+  h += '<div class="mobility-block" onclick="openMobility()"><div class="mobility-header"><span>Morning Mobility · 10 min · daily</span><span>→</span></div><div class="mobility-moves">'+PROGRAM.mobility.moves.map(m=>'<span class="mobility-pill">'+esc(m.name)+'</span>').join('')+'</div></div>';
+  h += '<div class="note-block"><div class="note-text">⚡ <strong>About HIIT:</strong> '+esc(PROGRAM.hiitNote)+'</div></div>';
+  document.getElementById('trainingBody').innerHTML = h;
+}
+
+/* --- recipes view --- */
+const FILTERS = [
+  {id:'all', label:'ALL'},
+  {id:'breakfast', label:'BREAKFAST'},
+  {id:'lunch', label:'LUNCH'},
+  {id:'dinner', label:'DINNER'},
+  {id:'side', label:'SIDES'},
+  {id:'condiment', label:'CONDIMENTS'},
+  {id:'wife', label:'WIFE-SAFE'},
+  {id:'batch', label:'BATCH'}
+];
+let activeFilter = 'all';
+function renderFilterBar(){
+  document.getElementById('recipeFilters').innerHTML = FILTERS.map(f=>'<button class="filter-btn'+(f.id===activeFilter?' active':'')+'" onclick="setFilter(\''+f.id+'\')">'+f.label+'</button>').join('');
+}
+function setFilter(id){ activeFilter=id; renderFilterBar(); renderRecipes(); }
+function renderRecipes(){
+  const q = (document.getElementById('recipeSearch').value||'').toLowerCase();
+  let list = RECIPES.slice().sort((a,b)=>a.name.localeCompare(b.name));
+  if(activeFilter==='wife') list = list.filter(r=>r.wife_safe);
+  else if(activeFilter==='batch') list = list.filter(r=>r.batch_cook);
+  else if(activeFilter!=='all') list = list.filter(r=>r.meal_type===activeFilter);
+  if(q) list = list.filter(r=>{
+    const hay = [r.name, r.name_french, r.description, r.region, (r.tags||[]).join(' '), (r.ingredients||[]).map(i=>i.name).join(' ')].join(' ').toLowerCase();
+    return hay.includes(q);
+  });
+  document.getElementById('recipeCount').textContent = list.length + ' OF ' + RECIPES.length + ' RECIPES';
+  document.getElementById('recipeGrid').innerHTML = list.length ? list.map(r=>{
+    const time = (r.prep_time_min||0)+(r.cook_time_min||0);
+    return '<div class="recipe-card" onclick="openRecipe('+r.id+')"><div class="recipe-card-inner">'+
+      '<div class="recipe-region">'+esc(r.region||'')+'</div>'+
+      '<div class="recipe-name">'+esc(r.name)+'</div>'+
+      '<div class="recipe-desc">'+esc(r.description||'')+'</div>'+
+      '<div class="recipe-meta">'+
+        '<span class="meta-chip chip-meal">'+esc((r.meal_type||'').toUpperCase())+'</span>'+
+        (time?'<span class="meta-chip chip-time">'+time+' MIN</span>':'')+
+        (r.protein?'<span class="meta-chip chip-protein">'+r.protein+'G PROTEIN</span>':'')+
+        (r.wife_safe?'<span class="meta-chip chip-wife">WIFE-SAFE</span>':'')+
+        (r.batch_cook?'<span class="meta-chip chip-batch">BATCH</span>':'')+
+      '</div></div></div>';
+  }).join('') : '<div class="no-results">Nothing in the library matches. Try fewer words.</div>';
+}
+
+/* --- modals --- */
+function openModalRaw(eyebrow, title, body){
+  document.getElementById('modalEyebrow').textContent = eyebrow;
+  document.getElementById('modalTitle').textContent = title;
+  document.getElementById('modalBody').innerHTML = body;
+  document.getElementById('modal').classList.add('open');
+  document.body.style.overflow='hidden';
+}
+function closeModal(){ document.getElementById('modal').classList.remove('open'); document.body.style.overflow=''; }
+
+function openRecipe(id){
+  const r = RECIPES.find(x=>x.id===id); if(!r) return;
+  let b = '<div class="stats-row">'+
+    '<div class="stat-box"><div class="stat-val">'+(r.calories||'–')+'</div><div class="stat-lbl">cal</div></div>'+
+    '<div class="stat-box"><div class="stat-val">'+(r.protein||'–')+'g</div><div class="stat-lbl">protein</div></div>'+
+    '<div class="stat-box"><div class="stat-val">'+((r.prep_time_min||0)+(r.cook_time_min||0))+'</div><div class="stat-lbl">min</div></div>'+
+    '<div class="stat-box"><div class="stat-val">'+(r.servings||'–')+'</div><div class="stat-lbl">serves</div></div></div>';
+  if(r.wife_notes) b += '<div class="wife-box"><div class="wife-box-title">Wife\'s version</div><div class="wife-box-text">'+esc(r.wife_notes)+'</div></div>';
+  if(r.ingredients && r.ingredients.length) b += '<div class="modal-section"><div class="modal-section-title">Ingrédients</div>'+r.ingredients.map(i=>'<div class="ingredient-row"><span>'+esc(i.name)+'</span><span class="ingredient-amount">'+esc(i.amount+(i.unit&&i.unit!=='whole'?' '+i.unit:''))+'</span></div>').join('')+'</div>';
+  if(r.steps && r.steps.length) b += '<div class="modal-section"><div class="modal-section-title">Method</div>'+r.steps.map((s,i)=>'<div class="step-row"><div class="step-num">'+(i+1)+'</div><div class="step-text">'+esc(s)+'</div></div>').join('')+'</div>';
+  if(r.notes) b += '<div class="notes-box"><div class="notes-text">'+esc(r.notes)+'</div></div>';
+  openModalRaw((r.region||'')+' · '+(r.meal_type||''), r.name, b);
+}
+function openExercise(wk, idx){
+  const ex = PROGRAM.workouts[wk].exercises[idx];
+  let b = '<div class="modal-section"><div class="modal-section-title">Sets & Reps</div>'+
+    '<div class="ingredient-row"><span>Prescription</span><span class="ingredient-amount">'+esc(ex.sets)+'</span></div>'+
+    '<div class="ingredient-row"><span>Note</span><span class="ingredient-amount" style="min-width:140px">'+esc(ex.detail)+'</span></div></div>';
+  b += '<div class="modal-section"><div class="modal-section-title">Cues</div>'+ex.cues.map(c=>'<div class="cue-row"><div class="cue-bullet"></div><div class="cue-text">'+esc(c)+'</div></div>').join('')+'</div>';
+  openModalRaw(PROGRAM.workouts[wk].title+' · Ex '+(idx+1), ex.name, b);
+}
+function openMobility(){
+  let b = '<div class="modal-section"><div class="modal-section-title">Routine — 10 min</div>'+PROGRAM.mobility.moves.map((m,i)=>'<div class="step-row"><div class="step-num">'+(i===PROGRAM.mobility.moves.length-1?'★':(i+1))+'</div><div class="step-text"><strong>'+esc(m.name)+'</strong> — '+esc(m.detail)+'</div></div>').join('')+'</div>';
+  openModalRaw('Daily · Every Morning', PROGRAM.mobility.title, b);
+}
+
+/* --- progress view --- */
+const LS_KEY = 'ohj_weight_log';
+function getLog(){ try{ return JSON.parse(localStorage.getItem(LS_KEY))||[]; }catch(e){ return []; } }
+function saveLog(l){ localStorage.setItem(LS_KEY, JSON.stringify(l)); }
+function addWeight(){
+  const inp = document.getElementById('weightInput');
+  const v = parseFloat(inp.value);
+  if(!v || v<100 || v>500){ inp.value=''; return; }
+  const log = getLog();
+  log.push({date: new Date().toISOString().slice(0,10), lbs: v});
+  saveLog(log); inp.value=''; renderProgress();
+}
+function delWeight(i){ const log=getLog(); log.splice(i,1); saveLog(log); renderProgress(); }
+function renderProgress(){
+  const log = getLog().sort((a,b)=>a.date.localeCompare(b.date));
+  const start = log.length? log[0].lbs : 270;
+  const current = log.length? log[log.length-1].lbs : 270;
+  const delta = current-start;
+  let h = '<div class="section-heading">Progress</div>';
+  h += '<div class="section-sub">Weigh in weekly — same conditions every time: morning, after the bathroom, before eating. The trend matters, not the day.</div>';
+  h += '<div class="big-stats">'+
+    '<div class="big-stat"><div class="big-stat-val">'+start.toFixed(1)+'</div><div class="big-stat-lbl">start</div></div>'+
+    '<div class="big-stat"><div class="big-stat-val">'+current.toFixed(1)+'</div><div class="big-stat-lbl">current</div></div>'+
+    '<div class="big-stat'+(delta<0?' down':'')+'"><div class="big-stat-val">'+(delta>0?'+':'')+delta.toFixed(1)+'</div><div class="big-stat-lbl">change</div></div></div>';
+  h += '<div class="weight-input-row"><input class="weight-input" id="weightInput" type="number" inputmode="decimal" step="0.1" placeholder="Today\'s weight (lbs)"><button class="weight-btn" onclick="addWeight()">Log</button></div>';
+  if(log.length>1){ h += '<canvas id="weightChart"></canvas>'; }
+  h += '<div class="card"><div class="card-header"><span class="card-title">📈 Log</span></div><div class="card-body">';
+  if(log.length){
+    h += log.slice().reverse().map((e,ri)=>{
+      const i = log.length-1-ri;
+      const prev = i>0? log[i-1].lbs : null;
+      const d = prev!==null? e.lbs-prev : null;
+      const dTxt = d===null? '—' : (d>0?'+':'')+d.toFixed(1);
+      const dCls = d===null? '' : (d<0?'down':(d>0?'up':''));
+      return '<div class="log-row"><span class="log-date">'+e.date+'</span><span class="log-weight">'+e.lbs.toFixed(1)+' lbs</span><span class="log-delta '+dCls+'">'+dTxt+'</span><button class="log-del" onclick="delWeight('+i+')">✕</button></div>';
+    }).join('');
+  } else {
+    h += '<div class="no-results" style="padding:24px 10px">No entries yet. Log your first weigh-in above — starting point is ~270.</div>';
+  }
+  h += '</div></div>';
+  h += '<div class="note-block"><div class="note-text">🎯 <strong>Milestones on deck:</strong> first strict pullup · 60-sec dead hang · ruck feeling easy at 30 lbs. Strength PRs and the scale trend tell the story together.</div></div>';
+  document.getElementById('progressBody').innerHTML = h;
+  if(log.length>1) drawChart(log);
+}
+function drawChart(log){
+  const c = document.getElementById('weightChart'); if(!c) return;
+  const dpr = window.devicePixelRatio||1;
+  const W = c.clientWidth, H = 160;
+  c.width = W*dpr; c.height = H*dpr;
+  const ctx = c.getContext('2d'); ctx.scale(dpr,dpr);
+  const vals = log.map(e=>e.lbs);
+  const min = Math.min.apply(null,vals)-2, max = Math.max.apply(null,vals)+2;
+  const px = i => 14 + (W-28) * (log.length===1?0.5:i/(log.length-1));
+  const py = v => 10 + (H-30) * (1-(v-min)/(max-min||1));
+  ctx.strokeStyle='#4a7c59'; ctx.lineWidth=2; ctx.lineJoin='round'; ctx.beginPath();
+  log.forEach((e,i)=>{ i===0? ctx.moveTo(px(i),py(e.lbs)) : ctx.lineTo(px(i),py(e.lbs)); });
+  ctx.stroke();
+  ctx.fillStyle='#1a2e1e';
+  log.forEach((e,i)=>{ ctx.beginPath(); ctx.arc(px(i),py(e.lbs),3,0,7); ctx.fill(); });
+  ctx.fillStyle='#7a8a7e'; ctx.font='9px DM Mono, monospace';
+  ctx.fillText(max.toFixed(0), 2, 12); ctx.fillText(min.toFixed(0), 2, H-14);
+}
+
+/* ============ INIT ============ */
+renderWeek(); renderTraining(); renderFilterBar(); renderRecipes(); renderProgress();
+(function(){
+  const today = new Date();
+  const map = {};
+  WEEK.days.forEach(d=>{ map[d.num]=d.id; });
+  const id = (today.getMonth()===6 && map[today.getDate()]) ? map[today.getDate()] : WEEK.days[0].id;
+  switchDay(id);
+  if(today.getMonth()===6 && map[today.getDate()]) document.querySelector('.day-tab[data-day="'+id+'"]').classList.add('today');
+})();
+</script>
+</body>
+</html>
