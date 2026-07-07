@@ -178,6 +178,9 @@ body{font-family:'Lato',sans-serif;background:var(--parchment);color:var(--text)
 .log-delta.up{color:var(--rust);}
 .log-del{background:none;border:none;color:var(--muted);cursor:pointer;font-size:14px;padding:0 0 0 10px;}
 #weightChart{width:100%;height:160px;margin-bottom:16px;}
+
+/* No dietary restrictions in this house - hide legacy wife-modification UI */
+.wife-box,.wife-tag,.note-block.wife{display:none!important;}
 </style>
 </head>
 <body>
@@ -278,23 +281,23 @@ const PROGRAM = {
 
 /* ============ THIS WEEK ============ */
 const WEEK = {
-  label: "Week of Jul 11–17",
-  eyebrow: "Week 14 of 20 · Phase 2 · Family of 5",
-  pills: ["Jul 11–17", "Strong · Fast · Mobile", "Agee Program"],
+  label: "Week of Jul 18–24",
+  eyebrow: "Week 15 of 20 · Phase 2 · Family of 5",
+  pills: ["Jul 18–24", "Strong · Fast · Mobile", "Agee Program"],
   days: [
-    {id:"sat", name:"Sat", num:11, date:"Saturday · July 11", title:"Marché Day", badges:[["shop","🛒 Shopping"],["ruck","🎒 Ruck"],["mobility","🧘 Mobility"],["family","👨‍👩‍👦 Family"]],
-      conditioning:{type:"ruck", header:"🎒 Ruck", main:"2–3 miles · 30 lb pack", detail:"Steady pace, before the heat if you can. When it starts feeling easy, add distance before adding weight."},
+    {id:"sat", name:"Sat", num:18, date:"Saturday · July 18", title:"Marché Day", badges:[["shop","🛒 Shopping"],["ruck","🎒 Ruck"],["mobility","🧘 Mobility"],["family","👨‍👩‍👦 Family"]],
+      conditioning:{type:"ruck", header:"🎒 Ruck", main:"2–3 miles · 30 lb pack", detail:"Get out before the July heat. When it starts feeling easy, add distance before adding weight."},
       meals:[
         {time:"Breakfast", recipe:"Tartine au Beurre", desc:"Bread, butter, café au lait. Wife: GF bread + yogurt and fruit."},
-        {time:"Lunch", recipe:"Plateau Charcuterie", desc:"The board — jambon, cheese, cornichons, olives. Everyone builds their own."},
-        {time:"Dinner", recipe:"Moules Marinières", desc:"Mussels, Nantes-style. Big pot at the table, bread for dipping. Kids love the theater of it."}
+        {time:"Lunch", recipe:"Plateau Charcuterie", desc:"Marché-day board — jambon, cheese, cornichons, olives. Everyone builds their own."},
+        {time:"Dinner", recipe:"Sardines Grillées à la Nantaise", desc:"Grilled sardines, potato wedges, lemon. Peak-summer Nantes. Naturally GF/DF for everyone."}
       ],
       shopping:[
-        {section:"Proteins — scaled for 5", items:["Whole chickens × 2 (~4 lbs each) — Sunday roast batch","Mussels (4–5 lbs) — Saturday dinner","Cod fillets × 6 (6 oz each) — Wednesday","Pork tenderloin (2 lbs) — Thursday","Ground turkey or chicken thighs (1.5 lbs) — Tuesday","Tuna in olive oil (5 cans)","Eggs (2 dozen + 6 for piperade)","Jambon (sliced ham) — charcuterie + breakfast","Anchovy fillets (1 tin)","Lardons or thick-cut bacon (6 oz) — Friday tarte flambée"]},
-        {section:"Produce", items:["Bell peppers (6 — red + yellow) — piperade batch","Tomatoes (8–10 medium) — piperade + salads","Fennel bulbs (2) — Wednesday cod","Haricots verts / green beans (2 lbs)","Leeks (4) — braises","Zucchini (3)","Carrots (1 large bunch)","Mixed salad greens (2 bags)","Lemons (6)","Garlic (2 heads)","Shallots (4) — skip for wife's portions","Fresh thyme + tarragon + basil","Onions (3 large) — tarte flambée"]},
-        {section:"Pantry, Dairy & Bread", items:["Sourdough / country loaf (2)","GF bread or crackers — for wife","Breton butter (unsalted + salted)","Crème fraîche — tarte flambée","Whole milk plain yogurt (32 oz)","French lentils (dry, 1 lb)","White beans / cannellini (2 cans)","Niçoise olives (jar)","Dijon mustard (check stock)","Dry white wine (1 bottle — moules + cooking)","Comté or Gruyère","Brie or soft cheese — Friday cheese course","Tarte flambée bases (thin crust) + GF flatbread for wife"]}
+        {section:"Proteins — scaled for 5", items:["Whole chickens × 2 (~4 lbs each) — Sunday roast batch","Fresh sardines or mackerel (2–2.5 lbs) — Saturday dinner","Pork tenderloin (2 lbs) — Tuesday","Salmon fillets × 6 (6 oz each) — Wednesday","Ground beef 85% lean (2 lbs) — Thursday","Duck legs × 6 — Friday confit","Tuna in olive oil (5–6 cans) — lunches","Eggs (2 dozen)","Jambon (sliced ham) — charcuterie","Anchovy fillets (1 tin) — niçoise"]},
+        {section:"Produce", items:["Zucchini (4) — soupe au pistou + ratatouille","Eggplant (2) — ratatouille batch","Bell peppers (3 — red + yellow) — ratatouille","Tomatoes (8–10 medium) — soupe + ratatouille + salads","Carrots (2 bunches) — soupe + Tuesday pork","Asparagus (2 lbs) — Wednesday salmon","Haricots verts / green beans (2 lbs)","Potatoes (4 lbs) — sardine wedges + confit potatoes","Mixed salad greens (2 bags)","Lemons (6)","Fresh basil (2 big bunches) — pistou batch","Fresh thyme + parsley + bay leaves","Garlic (2 heads)","Shallots (3) — skip for wife's portions"]},
+        {section:"Pantry, Dairy & Bread", items:["Sourdough / country loaf (2)","GF bread or crackers — for wife","Breton butter (unsalted + salted)","Whole milk plain yogurt (32 oz)","French lentils (dry, 1 lb)","Cannellini / white beans (4 cans) — soupe + Friday lunch","Niçoise olives (jar) + capers","Dijon mustard (check stock)","Chicken stock (8 cups / 2 quarts)","Duck fat (1 tub) — confit; olive oil works too","Small pasta + GF pasta — kids' soupe au pistou","Comté or Gruyère","Brie or soft cheese — Friday cheese course"]}
       ]},
-    {id:"sun", name:"Sun", num:12, date:"Sunday · July 12", title:"Prep Day", badges:[["prep","🍳 Batch Cook"],["mobility","🧘 Mobility"],["family","👨‍👩‍👦 Family"]],
+    {id:"sun", name:"Sun", num:19, date:"Sunday · July 19", title:"Prep Day", badges:[["prep","🍳 Batch Cook"],["mobility","🧘 Mobility"],["family","👨‍👩‍👦 Family"]],
       meals:[
         {time:"Breakfast", recipe:"Tartine au Beurre", desc:"Standard French morning. Café au lait for the adults."},
         {time:"Lunch", recipe:null, name:"Le Déjeuner du Cuisinier", desc:"Cook's lunch — whatever's coming together in the kitchen, bread, a piece of Comté."},
@@ -303,47 +306,48 @@ const WEEK = {
       prep:[
         {time:"10:00", task:"Season both chickens", detail:"Herbes de Provence, butter under skin (olive oil for the bird if wife's eating skin), lemon inside, salt all over. Oven to 400°F.", dur:"20 min active"},
         {time:"10:20", task:"Both chickens in the oven", detail:"400°F, ~1 hr 15 min. Baste once at 45 min.", dur:"hands-off"},
-        {time:"10:30", task:"Make piperade (big batch)", detail:"Peppers, tomato, olive oil. Pull wife's portion before onion/garlic go in. Feeds Monday dinner + Thursday lunch.", dur:"~35 min"},
-        {time:"11:10", task:"Cook lentils (double batch)", detail:"Bay leaf, thyme. Wife's portion out before shallot. For Tuesday dinner + salads.", dur:"~25 min"},
-        {time:"11:35", task:"Blanch haricots verts + hard-boil 10 eggs", detail:"Beans: 2 min boil, ice bath. Eggs for niçoise + snacks through the week.", dur:"~20 min"},
-        {time:"12:00", task:"Vinaigrette jar", detail:"Dijon, red wine vinegar, olive oil (shallot in Josh's jar only — make a small clean jar for wife).", dur:"5 min"},
+        {time:"10:30", task:"Make ratatouille (big batch)", detail:"Eggplant, zucchini, peppers, tomato, olive oil. Pull wife's portion before garlic goes in. Feeds Thursday's bœuf haché.", dur:"~40 min"},
+        {time:"11:15", task:"Cook lentils (double batch)", detail:"Bay leaf, thyme. Wife's portion out before shallot. For Wednesday salmon + Thursday lunch.", dur:"~25 min"},
+        {time:"11:40", task:"Blitz pistou (double batch)", detail:"Basil, garlic, olive oil. Small garlic-free jar for wife first. For Monday soupe + Friday lunch.", dur:"10 min"},
+        {time:"11:50", task:"Blanch haricots verts + hard-boil 10 eggs", detail:"Beans: 2 min boil, ice bath. Eggs for niçoise + snacks through the week.", dur:"~20 min"},
+        {time:"12:10", task:"Vinaigrette jars", detail:"Dijon, red wine vinegar, olive oil (shallot in Josh's jar only — small clean jar for wife).", dur:"5 min"},
         {time:"13:30", task:"Pull chickens, carve one for dinner", detail:"Second bird pulled and fridged — weekday lunches.", dur:"15 min"}
       ],
-      note:{wife:true, text:"🟣 <strong>Wife's Sunday note:</strong> Piperade and lentils portioned before onion/shallot/garlic. Chicken naturally GF/DF (olive oil finish for her). Separate clean vinaigrette jar. She eats the same table as everyone all week."}},
-    {id:"mon", name:"Mon", num:13, date:"Monday · July 13", title:"Strength A", badges:[["strength","💪 Workout A"],["mobility","🧘 Mobility"],["run","🚶 Lunch Walk"]],
+      note:{wife:true, text:"🟣 <strong>Wife's Sunday note:</strong> Ratatouille, lentils, and pistou portioned before garlic/shallot go in. Chicken naturally GF/DF (olive oil finish for her). Separate clean vinaigrette jar. She eats the same table as everyone all week."}},
+    {id:"mon", name:"Mon", num:20, date:"Monday · July 20", title:"Strength A", badges:[["strength","💪 Workout A"],["mobility","🧘 Mobility"],["run","🚶 Lunch Walk"]],
       workout:"A",
       meals:[
         {time:"Breakfast", recipe:"Tartine au Beurre", desc:"Bread, butter, café au lait."},
         {time:"Lunch", recipe:"Salade de Poulet aux Herbes", desc:"Batch chicken over greens, herbs, vinaigrette. High protein, zero cooking."},
-        {time:"Dinner", recipe:"Œufs en Piperade", desc:"Eggs poached in Sunday's piperade. Kids get bread; wife gets her clean batch."}
+        {time:"Dinner", recipe:"Soupe au Pistou", desc:"Provençal summer soup with Sunday's pistou. Kids get pasta in theirs; wife's bowl ladled before garlic, with her garlic-free pistou."}
       ]},
-    {id:"tue", name:"Tue", num:14, date:"Tuesday · July 14", title:"Conditioning", badges:[["run","🏃 Walk/Run"],["mobility","🧘 Mobility"]],
+    {id:"tue", name:"Tue", num:21, date:"Tuesday · July 21", title:"Conditioning", badges:[["run","🏃 Walk/Run"],["mobility","🧘 Mobility"]],
       conditioning:{type:"run", header:"🏃 Evening Walk/Run", main:"2–3 miles · conversational", detail:"Easy effort after work. If yesterday's squats are talking, walk more and run less — the miles count either way."},
       meals:[
         {time:"Breakfast", recipe:"Tartine au Beurre", desc:"Bread, butter, café au lait."},
         {time:"Lunch", recipe:"Salade Niçoise", desc:"Tuna, egg, haricots verts, olives, anchovy. Composed, never tossed."},
-        {time:"Dinner", recipe:"Poulet aux Lentilles et Estragon", desc:"Chicken with Sunday's lentils and tarragon. Paris bistro on a Tuesday."}
+        {time:"Dinner", recipe:"Filet de Porc Moutarde", desc:"Mustard-crusted pork tenderloin with roasted carrots. Wife's plate finished with olive oil, no butter sauce."}
       ]},
-    {id:"wed", name:"Wed", num:15, date:"Wednesday · July 15", title:"Strength B", badges:[["strength","💪 Workout B"],["mobility","🧘 Mobility"],["run","🚶 Lunch Walk"]],
+    {id:"wed", name:"Wed", num:22, date:"Wednesday · July 22", title:"Strength B", badges:[["strength","💪 Workout B"],["mobility","🧘 Mobility"],["run","🚶 Lunch Walk"]],
       workout:"B",
       meals:[
         {time:"Breakfast", recipe:"Tartine au Beurre", desc:"Bread, butter, café au lait."},
         {time:"Lunch", recipe:"Salade de Poulet aux Herbes", desc:"Round two — batch chicken, greens, vinaigrette."},
-        {time:"Dinner", recipe:"Cabillaud au Fenouil", desc:"Cod roasted over fennel, Nantes-style. Naturally GF/DF for everyone."}
+        {time:"Dinner", recipe:"Saumon aux Lentilles du Puy", desc:"Salmon over Sunday's lentils with asparagus. Wife's lentils are the shallot-free batch."}
       ]},
-    {id:"thu", name:"Thu", num:16, date:"Thursday · July 16", title:"Conditioning", badges:[["run","🏃 Walk/Run"],["mobility","🧘 Mobility"]],
+    {id:"thu", name:"Thu", num:23, date:"Thursday · July 23", title:"Conditioning", badges:[["run","🏃 Walk/Run"],["mobility","🧘 Mobility"]],
       conditioning:{type:"run", header:"🏃 Evening Walk/Run", main:"2–3 miles · conversational", detail:"Same as Tuesday. Still easy — the strength work is where you push this week."},
       meals:[
         {time:"Breakfast", recipe:"Tartine au Beurre", desc:"Bread, butter, café au lait."},
-        {time:"Lunch", recipe:"Thon à la Piperade", desc:"Tuna over Sunday's piperade. Basque lunch in two minutes."},
-        {time:"Dinner", recipe:"Porc aux Légumes Verts", desc:"Pork tenderloin with haricots verts and leeks."}
+        {time:"Lunch", recipe:"Thon aux Lentilles", desc:"Tuna over Sunday's lentils, capers, Dijon. Two-minute bistro lunch."},
+        {time:"Dinner", recipe:"Bœuf Haché Provençal", desc:"Herbed ground beef over Sunday's ratatouille. Wife's portion from her clean ratatouille batch."}
       ]},
-    {id:"fri", name:"Fri", num:17, date:"Friday · July 17", title:"Strength C", badges:[["strength","💪 Workout C"],["mobility","🧘 Mobility"],["family","👨‍👩‍👦 Family"]],
+    {id:"fri", name:"Fri", num:24, date:"Friday · July 24", title:"Strength C", badges:[["strength","💪 Workout C"],["mobility","🧘 Mobility"],["family","👨‍👩‍👦 Family"]],
       workout:"C",
       meals:[
         {time:"Breakfast", recipe:"Tartine au Beurre", desc:"Bread, butter, café au lait."},
-        {time:"Lunch", recipe:"Poulet Rôti + Haricots Blancs au Pistou", desc:"Last of the batch chicken, white beans, greens. Clean out the fridge."},
-        {time:"Dinner", recipe:"Tarte Flambée (Flammekueche)", desc:"Friday family dinner — thin crust, crème fraîche, onion, lardons. GF flatbread version for wife. Cheese course after."}
+        {time:"Lunch", recipe:"Poulet Rôti + Haricots Blancs au Pistou", desc:"Last of the batch chicken, white beans, Sunday's pistou. Clean out the fridge."},
+        {time:"Dinner", recipe:"Confit de Canard", desc:"Friday family dinner — duck legs, duck-fat potatoes, green salad. Naturally GF/DF, wife's plate identical. Cheese course after."}
       ],
       note:{wife:false, text:"🧀 <strong>Vendredi soir:</strong> Cheese course after dinner — Comté, Brie, a little bread. Deadlifts done, week done. Pour yourself a glass of something."}}
   ]
