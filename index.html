@@ -182,28 +182,14 @@ body{font-family:'Lato',sans-serif;background:var(--parchment);color:var(--text)
 /* No dietary restrictions in this house - hide legacy wife-modification UI */
 .wife-box,.wife-tag,.note-block.wife{display:none!important;}
 
-/* ---- exercise animations ---- */
-.exdemo{background:linear-gradient(135deg,#eef5ef,#dbeae0);border-radius:var(--radius-lg);border:1px solid var(--border);margin-bottom:6px;display:flex;align-items:center;justify-content:center;padding:8px 10px;}
-.exdemo svg{width:100%;max-width:230px;height:auto;display:block;}
-.exdemo-cap{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:0.12em;text-transform:uppercase;color:var(--muted);text-align:center;margin-bottom:16px;}
-.ex-desc{font-size:14px;line-height:1.6;color:var(--forest);margin-bottom:18px;}
-.figbody{fill:none;stroke:var(--green);stroke-width:6;stroke-linecap:round;stroke-linejoin:round;}
-.fighead{fill:var(--green);}
-.figgear{fill:none;stroke:var(--forest);stroke-width:6;stroke-linecap:round;}
-.figplate{fill:var(--forest);}
-.figband{fill:none;stroke:var(--gold);stroke-width:5;stroke-linecap:round;}
-.figpost{stroke:rgba(26,46,30,0.28);stroke-width:3;stroke-linecap:round;}
-.figfloor{stroke:rgba(26,46,30,0.22);stroke-width:3;stroke-linecap:round;}
-.pose-a{animation:poseAB 2.6s ease-in-out infinite;}
-.pose-b{animation:poseBA 2.6s ease-in-out infinite;}
-@keyframes poseAB{0%,16%{opacity:1}44%,62%{opacity:0}90%,100%{opacity:1}}
-@keyframes poseBA{0%,16%{opacity:0}44%,62%{opacity:1}90%,100%{opacity:0}}
-@media (prefers-reduced-motion: reduce){.pose-a{opacity:1;animation:none}.pose-b{opacity:0.35;animation:none}}
-/* ---- mobility mini demos ---- */
+/* ---- exercise demo links ---- */
+.ex-desc{font-size:14px;line-height:1.6;color:var(--forest);margin-bottom:16px;}
+.demo-btn{display:inline-flex;align-items:center;gap:7px;font-family:'DM Mono',monospace;font-size:11px;letter-spacing:0.06em;text-transform:uppercase;text-decoration:none;background:var(--green);color:#fff;padding:10px 15px;border-radius:var(--radius);margin-bottom:18px;}
+.demo-btn:hover{background:var(--forest-light);}
+.demo-btn-sm{margin-bottom:0;padding:7px 11px;font-size:10px;background:var(--gold-pale);color:#5c3d00;border:0.5px solid rgba(201,168,76,0.4);flex-shrink:0;}
+/* ---- mobility rows ---- */
 .mob-move{display:flex;gap:12px;align-items:center;padding:12px 0;border-bottom:1px solid var(--border);}
 .mob-move:last-child{border-bottom:none;}
-.mob-demo{flex-shrink:0;width:74px;height:62px;background:linear-gradient(135deg,#fdf6e3,var(--gold-pale));border-radius:var(--radius);display:flex;align-items:center;justify-content:center;border:0.5px solid rgba(201,168,76,0.3);}
-.mob-demo svg{width:66px;height:54px;}
 .mob-info{flex:1;}
 .mob-name{font-size:14px;font-weight:700;color:var(--forest);margin-bottom:3px;}
 .mob-detail{font-size:12px;color:var(--muted);line-height:1.5;}
@@ -303,73 +289,6 @@ const PROGRAM = {
   ],
   pullupPath: "The road to a first pullup. Dead hangs build grip and get the shoulders used to hanging. Inverted rows build the pulling muscles. Band reps and negatives teach the movement. Bodyweight keeps dropping. Then one day the chin clears the bar.",
   hiitNote: "HIIT (jump squats, plank jacks, mountain climbers) is on the shelf on purpose. It's the hardest way to get conditioned at this weight, and the walks, runs, and ruck already cover it. Low-impact intervals can come back later if you want them (kettlebell swings, step-ups, the bike). Spice, not the meal."
-};
-
-/* ============ EXERCISE ANIMATIONS (self-contained looping SVG) ============ */
-const _P=pts=>`<polyline class="figbody" points="${pts.map(p=>p[0]+','+p[1]).join(' ')}"/>`;
-const _HD=(x,y,r)=>`<circle class="fighead" cx="${x}" cy="${y}" r="${r||10}"/>`;
-const _BAR=(y,x1,x2)=>`<line class="figgear" x1="${x1}" y1="${y}" x2="${x2}" y2="${y}"/><circle class="figplate" cx="${x1}" cy="${y}" r="8"/><circle class="figplate" cx="${x2}" cy="${y}" r="8"/>`;
-const _DB=(x,y)=>`<rect class="figplate" x="${x-10}" y="${y-5}" width="20" height="10" rx="2"/>`;
-const _HBAR=(y,x1,x2)=>`<line class="figgear" x1="${x1}" y1="${y}" x2="${x2}" y2="${y}"/><line class="figpost" x1="${x1}" y1="${y}" x2="${x1}" y2="145"/><line class="figpost" x1="${x2}" y1="${y}" x2="${x2}" y2="145"/>`;
-const _BAND=(x1,y1,x2,y2)=>`<line class="figband" x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}"/>`;
-const _FLOOR=`<line class="figfloor" x1="18" y1="145" x2="182" y2="145"/>`;
-const _AB=(a,b,statics)=>`<svg viewBox="0 0 200 160" xmlns="http://www.w3.org/2000/svg">${statics||''}<g class="pose-a">${a}</g><g class="pose-b">${b}</g></svg>`;
-const EX_ANIM = {
-  squat: _AB(
-    _P([[85,145],[85,112],[88,86],[92,52]])+_P([[92,52],[80,60],[74,50]])+_BAR(50,64,120)+_HD(94,40),
-    _P([[85,145],[72,110],[96,112],[99,80]])+_P([[99,80],[87,86],[81,76]])+_BAR(76,73,127)+_HD(101,68),
-    _FLOOR),
-  hinge: _AB(
-    _P([[85,145],[85,112],[88,84],[90,50]])+_P([[90,50],[90,96]])+_BAR(98,72,114)+_HD(92,38),
-    _P([[85,145],[83,112],[96,90],[70,66]])+_P([[70,66],[74,110]])+_BAR(112,58,96)+_HD(60,58),
-    _FLOOR),
-  floorPress: (()=>{const base=_P([[75,120],[120,120]])+_P([[75,120],[58,102],[46,120]])+_HD(132,117);
-    return _AB(base+_P([[120,120],[121,102],[113,98]])+_DB(112,96), base+_P([[120,120],[122,82]])+_DB(122,78), _FLOOR);})(),
-  row: (()=>{const bench=`<line class="figgear" x1="96" y1="100" x2="148" y2="100"/><line class="figpost" x1="100" y1="100" x2="100" y2="145"/><line class="figpost" x1="144" y1="100" x2="144" y2="145"/>`;
-    const s=_P([[60,145],[63,118],[67,96],[102,88]])+_P([[102,88],[116,100]])+_HD(114,82);
-    return _AB(s+_P([[102,88],[97,122]])+_DB(97,126), s+_P([[102,88],[106,104],[94,98]])+_DB(92,100), _FLOOR+bench);})(),
-  farmerCarry: (()=>{const s=_P([[100,50],[100,110]])+_HD(100,38)+_P([[100,58],[80,100]])+_P([[100,58],[120,100]])+_DB(80,104)+_DB(120,104);
-    return _AB(s+_P([[100,110],[88,145]])+_P([[100,110],[112,140]]), s+_P([[100,110],[88,140]])+_P([[100,110],[112,145]]), _FLOOR);})(),
-  deadBug: (()=>{const s=_P([[96,118],[72,118]])+_HD(60,116);
-    return _AB(s+_P([[72,118],[72,86]])+_P([[96,118],[98,90],[116,90]]), s+_P([[72,118],[46,102]])+_P([[96,118],[124,112]]), _FLOOR);})(),
-  invertedRow: _AB(
-    _P([[50,138],[85,110],[110,92]])+_P([[110,92],[112,55]])+_HD(122,88),
-    _P([[50,138],[85,104],[112,74]])+_P([[112,74],[116,60],[112,55]])+_HD(124,70),
-    _FLOOR+_HBAR(55,66,134)),
-  pressOverhead: (()=>{const s=_P([[70,145],[82,140],[96,112]])+_P([[96,112],[120,122],[120,145]])+_P([[96,112],[97,72]])+_HD(97,60);
-    return _AB(s+_P([[97,72],[110,80],[110,66]])+_DB(110,64), s+_P([[97,72],[99,40]])+_DB(99,38), _FLOOR);})(),
-  splitSquat: _AB(
-    _P([[120,145],[120,112],[100,92]])+_P([[100,92],[80,120],[70,145]])+_P([[100,92],[100,56]])+_HD(100,44),
-    _P([[120,145],[124,122],[102,110]])+_P([[102,110],[82,134],[72,145]])+_P([[102,110],[102,76]])+_HD(102,64),
-    _FLOOR),
-  bandPullApart: (()=>{const s=_P([[100,55],[100,110]])+_HD(100,42)+_P([[100,110],[85,145]])+_P([[100,110],[115,145]]);
-    return _AB(s+_P([[100,62],[80,72]])+_P([[100,62],[120,72]])+_BAND(80,72,120,72), s+_P([[100,62],[62,60]])+_P([[100,62],[138,60]])+_BAND(62,60,138,60), _FLOOR);})(),
-  gobletSquat: _AB(
-    _P([[88,145],[88,112],[90,86],[93,54]])+_P([[93,54],[84,66]])+_DB(82,66)+_HD(95,42),
-    _P([[88,145],[74,110],[98,112],[101,80]])+_P([[101,80],[92,90]])+_DB(90,90)+_HD(103,68),
-    _FLOOR),
-  pullup: _AB(
-    _P([[100,40],[100,74]])+_P([[100,74],[102,106]])+_P([[102,106],[112,120],[100,128]])+_BAND(100,40,112,120)+_HD(100,62),
-    _P([[100,40],[96,54],[100,62]])+_P([[100,62],[102,92]])+_P([[102,92],[112,104],[100,112]])+_BAND(100,40,112,104)+_HD(100,50),
-    _FLOOR+_HBAR(40,66,134)),
-  deadHang: _AB(
-    _P([[100,40],[100,70],[100,106],[100,144]])+_HD(100,58),
-    _P([[100,40],[100,76],[100,112],[100,150]])+_HD(100,64),
-    _FLOOR+_HBAR(40,66,134)),
-  hip9090: (()=>{const legs=_P([[100,120],[128,120],[128,140]])+_P([[100,120],[78,132],[78,150]]);
-    return _AB(legs+_P([[100,120],[100,80]])+_P([[100,88],[118,104]])+_HD(100,68), legs+_P([[100,120],[122,92]])+_P([[116,98],[132,116]])+_HD(130,84), _FLOOR);})(),
-  worldsGreatest: (()=>{const s=_P([[120,145],[120,112],[100,100]])+_P([[100,100],[78,125],[64,145]]);
-    return _AB(s+_P([[100,100],[100,74]])+_P([[100,80],[118,126]])+_HD(100,62), s+_P([[100,100],[104,74]])+_P([[104,80],[114,44]])+_HD(102,58), _FLOOR);})(),
-  thoracicOpener: (()=>{const s=_P([[80,100],[122,108]])+_P([[122,108],[122,140],[134,140]]);
-    return _AB(s+_P([[80,100],[80,140]])+_HD(70,104), s+_P([[80,100],[58,74]])+_HD(74,96), _FLOOR);})(),
-  hipFlexor: (()=>{const s=_P([[64,140],[78,140],[98,108]])+_P([[98,108],[122,120],[122,145]]);
-    return _AB(s+_P([[98,108],[100,72]])+_P([[100,84],[116,96]])+_HD(100,60), s+_P([[98,108],[114,80]])+_P([[110,86],[126,98]])+_HD(120,70), _FLOOR);})(),
-  hamstring: _AB(
-    _P([[90,145],[90,112],[92,86],[80,68]])+_P([[80,68],[82,100]])+_HD(72,60),
-    _P([[90,145],[90,112],[92,92],[86,104]])+_P([[86,104],[88,138]])+_HD(82,110),
-    _FLOOR),
-  sleeper: (()=>{const s=_P([[70,120],[120,120]])+_P([[70,120],[54,132],[44,120]])+_HD(132,117)+_P([[120,120],[120,104]]);
-    return _AB(s+_P([[120,104],[104,100]]), s+_P([[120,104],[104,116]]), _FLOOR);})()
 };
 
 /* ============ THIS WEEK ============ */
@@ -606,11 +525,15 @@ function openRecipe(id){
   if(r.notes) b += '<div class="notes-box"><div class="notes-text">'+esc(r.notes)+'</div></div>';
   openModalRaw((r.region||'')+' · '+(r.meal_type||''), r.name, b);
 }
+function demoBtn(query, small){
+  const url = 'https://www.youtube.com/results?search_query=' + encodeURIComponent(query);
+  return '<a class="demo-btn'+(small?' demo-btn-sm':'')+'" href="'+url+'" target="_blank" rel="noopener">▶ Watch demo</a>';
+}
 function openExercise(wk, idx){
   const ex = PROGRAM.workouts[wk].exercises[idx];
   let b = '';
-  if(ex.anim && EX_ANIM[ex.anim]) b += '<div class="exdemo">'+EX_ANIM[ex.anim]+'</div><div class="exdemo-cap">Looping demo · not to scale</div>';
   if(ex.desc) b += '<div class="ex-desc">'+esc(ex.desc)+'</div>';
+  b += demoBtn(ex.name.replace(' / Negatives','') + ' proper form');
   b += '<div class="modal-section"><div class="modal-section-title">Sets & Reps</div>'+
     '<div class="ingredient-row"><span>Prescription</span><span class="ingredient-amount">'+esc(ex.sets)+'</span></div>'+
     '<div class="ingredient-row"><span>Note</span><span class="ingredient-amount" style="min-width:140px">'+esc(ex.detail)+'</span></div></div>';
@@ -619,7 +542,7 @@ function openExercise(wk, idx){
 }
 function openMobility(){
   let b = '<div class="ex-desc">Ten minutes, every morning. Loosens up the hips, back, and shoulders so the day (and the lifting) feels better. The sleeper stretch at the end is the shoulder\'s daily maintenance.</div>';
-  b += '<div class="modal-section"><div class="modal-section-title">Routine · 10 min</div>'+PROGRAM.mobility.moves.map(m=>'<div class="mob-move">'+((m.anim&&EX_ANIM[m.anim])?'<div class="mob-demo">'+EX_ANIM[m.anim]+'</div>':'')+'<div class="mob-info"><div class="mob-name">'+esc(m.name)+'</div><div class="mob-detail">'+esc(m.detail)+'</div></div></div>').join('')+'</div>';
+  b += '<div class="modal-section"><div class="modal-section-title">Routine · 10 min</div>'+PROGRAM.mobility.moves.map(m=>{const clean=m.name.replace(' ★','')+' demo';return '<div class="mob-move"><div class="mob-info"><div class="mob-name">'+esc(m.name)+'</div><div class="mob-detail">'+esc(m.detail)+'</div></div>'+demoBtn(clean,true)+'</div>';}).join('')+'</div>';
   openModalRaw('Daily · Every Morning', PROGRAM.mobility.title, b);
 }
 
