@@ -293,68 +293,68 @@ const PROGRAM = {
 
 /* ============ THIS WEEK ============ */
 const WEEK = {
-  label: "Week of Jul 11–17",
-  eyebrow: "Week 14 of 20 · Phase 2 · Family of 5",
-  pills: ["Jul 11–17", "Strong · Fast · Mobile", "Agee Program"],
+  label: "Week of Jul 18–24",
+  eyebrow: "Week 15 of 20 · Phase 2 · Family of 5",
+  pills: ["Jul 18–24", "Strong · Fast · Mobile", "Agee Program"],
   days: [
-    {id:"sat", name:"Sat", num:11, date:"Saturday · July 11", title:"Pickup Day", badges:[["shop","🛒 Pickup"],["ruck","🎒 Ruck"],["mobility","🧘 Mobility"],["family","👨‍👩‍👦 Family"]],
-      conditioning:{type:"ruck", header:"🎒 Ruck", main:"2–3 miles · 30 lb pack", detail:"Get out before the July heat. When it starts feeling easy, add distance before weight. Swing by the Walmart pickup at Ashland on the way home."},
+    {id:"sat", name:"Sat", num:18, date:"Saturday · July 18", title:"Pickup Day", badges:[["shop","🛒 Pickup"],["ruck","🎒 Ruck"],["mobility","🧘 Mobility"],["family","👨‍👩‍👦 Family"]],
+      conditioning:{type:"ruck", header:"🎒 Ruck", main:"2–3 miles · 30 lb pack", detail:"Get out before the July heat. When it starts feeling easy, add distance before weight. Swing by the Walmart pickup at Ashland on the way home — pick your slot and check out."},
       meals:[
         {time:"Breakfast", recipe:null, name:"Eggs, Toast & Fruit", desc:"Simple start before the ruck."},
         {time:"Lunch", recipe:null, name:"Easy Assembly", desc:"Sandwiches or whatever's on hand — light before pickup."},
-        {time:"Dinner", recipe:null, name:"Easy Family Night", desc:"Pickup day — keep it easy. The Argentine week kicks off Sunday."}
+        {time:"Dinner", recipe:null, name:"Easy Family Night", desc:"Pickup day — keep it easy. The Spain vs Argentina World Cup final spread kicks off Sunday."}
       ],
       shopping:[
-        {section:"Walmart Pickup — Ashland Supercenter", items:["Cart already built via the weekly plan — pick your Saturday slot and check out.","In the cart: green olives, green onions, Italian parsley ×2, lemons, gold potatoes ×2, romaine hearts, Roma tomatoes ×5, mini cucumbers, sweet corn ×2, bone-in chicken thighs.","From the freezer (not bought): ground beef (2 lb), pork tenderloin, pork chops.","On hand (pantry): flour, eggs, butter, red wine vinegar, garlic, olive oil, cumin, paprika, oregano."]}
+        {section:"Walmart Pickup — Ashland Supercenter", items:["Cart already built via the weekly plan — pick your Saturday slot and check out.","In the cart: russet potatoes (5 lb), yellow/gold potatoes (3 lb), whole milk, panko ×2, cornstarch, dulce de leche ×2, chocolate wafers ×2, cream cheese 2-pack, semi-sweet chocolate ×2, fresh mozzarella ×2, Chobani 20g Greek yogurt, thick-cut bacon, beef cube steak (for milanesas), all-purpose flour, sugar.","Making your own: brava sauce, chimichurri, pizza sauce, garden basil — and roasting your own chicken for the croquetas.","On hand (pantry): eggs, butter, olive oil, garlic, onion, cinnamon, salt & pepper."]}
       ]},
-    {id:"sun", name:"Sun", num:12, date:"Sunday · July 12", title:"Prep Day · Empanadas", badges:[["prep","🍳 Cook Night"],["mobility","🧘 Mobility"],["family","👨‍👩‍👦 Family"]],
+    {id:"sun", name:"Sun", num:19, date:"Sunday · July 19", title:"World Cup Final · Grazing Day", badges:[["prep","🍳 Cook Day"],["family","👨‍👩‍👦 Family"],["mobility","🧘 Mobility"]],
       meals:[
-        {time:"Breakfast", recipe:null, name:"Eggs, Toast & Fruit", desc:"Easy Sunday morning."},
-        {time:"Lunch", recipe:null, name:"Cook's Lunch", desc:"Light — bread, cheese, fruit. Save room for empanada night."},
-        {time:"Dinner", recipe:null, name:"Argentine Beef Empanadas", desc:"Cook night — big batch of beef empanadas (Bon Appétit). Uses the 2 lb ground beef; scratch dough from pantry flour, eggs, butter. Mild filling, hot sauce on the side. Make extra for Monday."}
+        {time:"Breakfast", recipe:null, name:"Eggs, Toast & Fruit", desc:"Easy Sunday morning before the cooking starts."},
+        {time:"Lunch", recipe:null, name:"Grazing Begins", desc:"Start putting the spread out — croquetas and milanesas off the fryer, boards on the table."},
+        {time:"Dinner", recipe:null, name:"🇪🇸🇦🇷 Spain vs Argentina Spread", desc:"All-day grazing for the final: chicken croquetas, beef milanesas, patatas bravas, papas con chimichurri. Desserts: leche frita, chocotorta, churros two ways (chocolate + dulce de leche)."}
       ],
       prep:[
-        {time:"Afternoon", task:"Make the empanada dough", detail:"Flour, butter, egg, water. Rest 30 min while the filling comes together.", dur:"~20 min active"},
-        {time:"Afternoon", task:"Brown the beef filling", detail:"Ground beef, onion, cumin, paprika, oregano, chopped green olives + hard-boiled egg. Cool before filling.", dur:"~25 min"},
-        {time:"Evening", task:"Fill, fold and bake a big batch", detail:"Aim for 30+ so there is plenty for Monday's leftovers.", dur:"~40 min"},
-        {time:"Evening", task:"Chimichurri batch", detail:"Parsley, garlic, oregano, red wine vinegar, olive oil, pinch of red pepper. Covers Tuesday chicken and Thursday pork. Keeps all week.", dur:"10 min"}
+        {time:"Morning", task:"Croqueta béchamel + chill", detail:"Roast your half chicken, fold shredded meat into a thick béchamel. Chill 3 hrs+ before shaping and frying. Freeze the other half's batch for later.", dur:"~40 min active"},
+        {time:"Morning", task:"Assemble the chocotorta", detail:"Whip dulce de leche + cream cheese, layer with coffee-dipped chocolate wafers. Chill until the final.", dur:"~20 min"},
+        {time:"Afternoon", task:"Leche frita base + potatoes", detail:"Cook the leche frita custard and chill to set. Par-boil and roast both potato batches — russets for the bravas, golds for the chimichurri.", dur:"~30 min"},
+        {time:"Pre-match", task:"Bread + fry, churros to order", detail:"Bread the cube-steak milanesas. Fry milanesas and croquetas. Churros fresh — half with the chocolate dip, half filled with dulce de leche.", dur:"~40 min"}
       ]},
-    {id:"mon", name:"Mon", num:13, date:"Monday · July 13", title:"Strength A", badges:[["strength","💪 Workout A"],["mobility","🧘 Mobility"],["run","🚶 Lunch Walk"]],
+    {id:"mon", name:"Mon", num:20, date:"Monday · July 20", title:"Strength A", badges:[["strength","💪 Workout A"],["mobility","🧘 Mobility"],["run","🚶 Lunch Walk"]],
       workout:"A",
       meals:[
         {time:"Breakfast", recipe:null, name:"Eggs, Toast & Fruit", desc:"Standard weekday start."},
-        {time:"Lunch", recipe:null, name:"Leftover Empanadas", desc:"Grab a couple from Sunday's batch."},
-        {time:"Dinner", recipe:null, name:"Leftovers — Beef Empanadas", desc:"Reheat Sunday's empanadas. Quick green salad on the side."}
+        {time:"Lunch", recipe:null, name:"Spread Leftovers", desc:"Croquetas, milanesas, and potatoes from Sunday."},
+        {time:"Dinner", recipe:null, name:"Leftovers — World Cup Spread", desc:"Reheat croquetas and milanesas; potatoes crisp back up in the oven."}
       ]},
-    {id:"tue", name:"Tue", num:14, date:"Tuesday · July 14", title:"Conditioning · Chimichurri Chicken", badges:[["run","🏃 Walk/Run"],["mobility","🧘 Mobility"]],
+    {id:"tue", name:"Tue", num:21, date:"Tuesday · July 21", title:"Conditioning", badges:[["run","🏃 Walk/Run"],["mobility","🧘 Mobility"]],
       conditioning:{type:"run", header:"🏃 Evening Walk/Run", main:"2–3 miles · conversational", detail:"Easy effort after work. If Monday's squats are talking, walk more and run less."},
       meals:[
         {time:"Breakfast", recipe:null, name:"Eggs, Toast & Fruit", desc:"Standard weekday start."},
-        {time:"Lunch", recipe:null, name:"Easy Assembly", desc:"Salad or sandwich — light before the grill night."},
-        {time:"Dinner", recipe:null, name:"Grilled Chimichurri Chicken Thighs", desc:"Cook night — bone-in, skin-on thighs on the grill, chimichurri on the side (Creme de la Crumb). Corn + salad. Grill extra for Wednesday."}
+        {time:"Lunch", recipe:null, name:"Spread Leftovers", desc:"Last of the milanesas and potatoes."},
+        {time:"Dinner", recipe:null, name:"Leftovers — World Cup Spread", desc:"Finish off Sunday's spread before pizza night."}
       ]},
-    {id:"wed", name:"Wed", num:15, date:"Wednesday · July 15", title:"Strength B", badges:[["strength","💪 Workout B"],["mobility","🧘 Mobility"],["run","🚶 Lunch Walk"]],
+    {id:"wed", name:"Wed", num:22, date:"Wednesday · July 22", title:"Strength B · Pizza Night", badges:[["strength","💪 Workout B"],["mobility","🧘 Mobility"],["family","👨‍👩‍👦 Family"]],
       workout:"B",
       meals:[
         {time:"Breakfast", recipe:null, name:"Eggs, Toast & Fruit", desc:"Standard weekday start."},
-        {time:"Lunch", recipe:null, name:"Leftover Chicken", desc:"Tuesday's chimichurri chicken over greens."},
-        {time:"Dinner", recipe:null, name:"Leftovers — Chimichurri Chicken", desc:"Reheat the grilled chicken; leftover corn and salad."}
+        {time:"Lunch", recipe:null, name:"Easy Assembly", desc:"Salad or sandwich — light before pizza night."},
+        {time:"Dinner", recipe:null, name:"Pizza Night — Neapolitan + Tarte Flambée", desc:"Cook night — Vito Iacopelli poolish dough (start the poolish Tuesday night). Neapolitan with your sauce, fresh mozzarella, garden basil; a tarte flambée version with Greek yogurt base, onion, and bacon. Make extra."}
       ]},
-    {id:"thu", name:"Thu", num:16, date:"Thursday · July 16", title:"Conditioning · Grilled Pork", badges:[["run","🏃 Walk/Run"],["mobility","🧘 Mobility"]],
+    {id:"thu", name:"Thu", num:23, date:"Thursday · July 23", title:"Conditioning", badges:[["run","🏃 Walk/Run"],["mobility","🧘 Mobility"]],
       conditioning:{type:"run", header:"🏃 Evening Walk/Run", main:"2–3 miles · conversational", detail:"Same as Tuesday. Keep it easy — the strength work is where the push is this week."},
       meals:[
         {time:"Breakfast", recipe:null, name:"Eggs, Toast & Fruit", desc:"Standard weekday start."},
-        {time:"Lunch", recipe:null, name:"Easy Assembly", desc:"Leftovers or a quick salad."},
-        {time:"Dinner", recipe:null, name:"Grilled Pork Tenderloin + Chops w/ Chimichurri", desc:"Cook night — grill the freezer tenderloin and chops with the same chimichurri (Cafe Delites). Roasted gold potatoes + corn. Slice extra for Friday."}
+        {time:"Lunch", recipe:null, name:"Leftover Pizza", desc:"Cold or reheated slices from Wednesday."},
+        {time:"Dinner", recipe:null, name:"Leftovers — Pizza", desc:"Reheat the Neapolitan and flammekueche; quick green salad on the side."}
       ]},
-    {id:"fri", name:"Fri", num:17, date:"Friday · July 17", title:"Strength C", badges:[["strength","💪 Workout C"],["mobility","🧘 Mobility"],["family","👨‍👩‍👦 Family"]],
+    {id:"fri", name:"Fri", num:24, date:"Friday · July 24", title:"Strength C", badges:[["strength","💪 Workout C"],["mobility","🧘 Mobility"],["family","👨‍👩‍👦 Family"]],
       workout:"C",
       meals:[
         {time:"Breakfast", recipe:null, name:"Eggs, Toast & Fruit", desc:"Standard weekday start."},
-        {time:"Lunch", recipe:null, name:"Leftover Pork", desc:"Sliced pork from Thursday over greens or in a wrap."},
-        {time:"Dinner", recipe:null, name:"Leftovers — Pork Tenderloin + Chops", desc:"Reheat the grilled pork with the last of the chimichurri and potatoes. Deadlifts done, week done."}
+        {time:"Lunch", recipe:null, name:"Easy Assembly", desc:"Whatever's left — spread or pizza odds and ends."},
+        {time:"Dinner", recipe:null, name:"Leftovers — Spread & Pizza", desc:"Clear the fridge. Deadlifts done, week done."}
       ],
-      note:{wife:false, text:"🇦🇷 <strong>Asado week done:</strong> empanadas, chimichurri chicken, chimichurri pork — three cooks, three leftover nights. Pour yourself something."}}
+      note:{wife:false, text:"🇪🇸🇦🇷 <strong>World Cup final week:</strong> a full Spain-vs-Argentina grazing spread Sunday, pizza night Wednesday, leftovers between. Two cooks, plenty of leftovers. Pour yourself something."}}
   ]
 };
 
